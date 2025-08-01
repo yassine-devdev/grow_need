@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 // Import all Concierge components for comprehensive testing
-import ConciergeAIModule from '../ConciergeAIModule';
+import ConciergeAIModule from '../../ConciergeAIModule';
 import AuraConcierge from '../AuraConcierge';
 import EnhancedAuraConciergeWrapper from '../EnhancedAuraConciergeWrapper';
 import Summarizer from '../Summarizer';
