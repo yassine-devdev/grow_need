@@ -67,26 +67,54 @@ Follow these steps to get a local copy up and running.
 
 ### Prerequisites
 
-You only need a modern web browser that supports ES modules.
+- Node.js (version 16 or higher)
+- npm or yarn package manager
+- A modern web browser
+
+### Environment Setup
+
+**Important:** Configure your environment variables before running the application.
+
+1. **Copy the environment template:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Configure your environment variables** in the `.env` file according to your setup.
+
+3. **For detailed environment setup instructions**, see the [Environment Setup Guide](./docs/ENVIRONMENT_SETUP.md).
 
 ### API Key Setup
 
-This project relies on the Google Gemini API for its AI features. The application is hardcoded to look for the API key in `process.env.API_KEY`. For development, replace this with your actual API key where `new GoogleGenAI()` is called.
+This project supports multiple AI providers (Gemini, OpenAI, Ollama). Configure your chosen provider in the `.env` file:
 
-**Warning:** Do not commit your API key to a public repository.
+- **Gemini**: Set `GEMINI_API_KEY` with your Google AI API key
+- **OpenAI**: Set `OPENAI_API_KEY` with your OpenAI API key  
+- **Ollama**: Set `OLLAMA_BASE_URL` to your Ollama server (default: `http://localhost:11434`)
+
+**Warning:** Never commit real API keys to version control.
 
 ### Installation
 
-1.  Clone the repository or download the source files.
-2.  Since there is no build step, you just need to serve the files from a local web server. The easiest way is using `serve`:
-    ```bash
-    # If you don't have serve, install it globally
-    npm install -g serve
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd grow_need
+   ```
 
-    # Navigate to the project directory and run the server
-    serve .
-    ```
-3.  Open your browser and navigate to the local address provided by `serve` (e.g., `http://localhost:3000`).
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Set up your environment** (see Environment Setup section above)
+
+4. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open your browser** and navigate to `http://localhost:5173`
 
 ---
 
