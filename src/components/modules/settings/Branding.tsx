@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Icons } from '../../icons';
 import { applyTheme } from './theme-utils';
+import { secureStorage } from '../../../utils/secureStorage';
 import './shared.css';
 import './Branding.css';
 
@@ -167,8 +168,8 @@ const ColorControl = ({ label, value, onChange }) => {
 
 const Branding: React.FC = () => {
     const [themeColors, setThemeColors] = useState(() => {
-        const savedTheme = localStorage.getItem('aura-theme');
-        return savedTheme ? JSON.parse(savedTheme) : defaultTheme;
+        const savedTheme = secureStorage.getItem('aura-theme');
+        return savedTheme || defaultTheme;
     });
     const [activePreset, setActivePreset] = useState('Aura Default');
     const [openAccordion, setOpenAccordion] = useState<string | null>('layout');
@@ -182,12 +183,15 @@ const Branding: React.FC = () => {
     }, []);
 
     const handleSave = () => {
-        localStorage.setItem('aura-theme', JSON.stringify(themeColors));
-        alert('Theme saved!');
+        if (secureStorage.setItem('aura-theme', themeColors)) {
+            alert('Theme saved securely!');
+        } else {
+            alert('Failed to save theme. Please try again.');
+        }
     };
     
     const handleReset = () => {
-        localStorage.removeItem('aura-theme');
+        secureStorage.removeItem('aura-theme');
         setThemeColors(defaultTheme);
         setActivePreset('Aura Default');
     };
