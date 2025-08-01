@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Icons } from '../../icons';
 import { applyDesign } from './theme-utils';
+import { secureStorage } from '../../../utils/secureStorage';
 import './shared.css';
 import './Design.css';
 
@@ -37,8 +38,8 @@ const SliderControl = ({ label, value, onChange, min, max, step, unit }) => {
 
 const Design: React.FC = () => {
     const [design, setDesign] = useState(() => {
-        const savedDesign = localStorage.getItem('aura-design');
-        return savedDesign ? JSON.parse(savedDesign) : defaultDesign;
+        const savedDesign = secureStorage.getItem('aura-design');
+        return savedDesign || defaultDesign;
     });
 
     useEffect(() => {
@@ -50,12 +51,15 @@ const Design: React.FC = () => {
     }, []);
 
     const handleSave = () => {
-        localStorage.setItem('aura-design', JSON.stringify(design));
-        alert('Design settings saved!');
+        if (secureStorage.setItem('aura-design', design)) {
+            alert('Design settings saved securely!');
+        } else {
+            alert('Failed to save design settings. Please try again.');
+        }
     };
 
     const handleReset = () => {
-        localStorage.removeItem('aura-design');
+        secureStorage.removeItem('aura-design');
         setDesign(defaultDesign);
     };
 
