@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">5.49% </span>
+                <span class="strong">14.28% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/91</span>
+                <span class='fraction'>13/91</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">5.66% </span>
+                <span class="strong">7.54% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/53</span>
+                <span class='fraction'>4/53</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">6.25% </span>
+                <span class="strong">12.5% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/16</span>
+                <span class='fraction'>2/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">5.88% </span>
+                <span class="strong">15.29% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/85</span>
+                <span class='fraction'>13/85</span>
             </div>
         
             
@@ -433,38 +433,38 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -724,11 +724,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * Vector Database Bridge Service
  * Connects TypeScript frontend with Python vector database backend
@@ -778,26 +778,26 @@ export class VectorDBBridge {
   /**
    * Test connection to vector database
    */
-<span class="fstat-no" title="function not covered" >  async </span>testConnection(): Promise&lt;boolean&gt; {
-<span class="cstat-no" title="statement not covered" >    try {</span>
-      const controller = <span class="cstat-no" title="statement not covered" >new AbortController();</span>
-      const timeoutId = <span class="cstat-no" title="statement not covered" >setTimeout(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >controller.abort(),</span> 5000);</span>
+  async testConnection(): Promise&lt;boolean&gt; {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >controller.abort(),</span> 5000);
 &nbsp;
-      const response = <span class="cstat-no" title="statement not covered" >await fetch(`${this.baseUrl}/api/stats`, {</span>
+      const response = await fetch(`${this.baseUrl}/api/stats`, {
         signal: controller.signal,
         headers: {
           'Content-Type': 'application/json',
         },
       });
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      clearTimeout(timeoutId);</span>
-<span class="cstat-no" title="statement not covered" >      return response.ok;</span>
+      clearTimeout(timeoutId);
+      return response.ok;
     } catch (error) {
       // Only log connection errors in development mode to reduce console spam
-<span class="cstat-no" title="statement not covered" >      if (process.env.NODE_ENV === 'development') {</span>
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (process.env.NODE_ENV === 'development') {
 <span class="cstat-no" title="statement not covered" >        console.warn('Vector DB connection test failed (this is expected if no backend is running):', error.message);</span>
       }
-<span class="cstat-no" title="statement not covered" >      return false;</span>
+      return false;
     }
   }
 &nbsp;
@@ -1069,7 +1069,7 @@ export default vectorDBBridge;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-08-01T11:06:39.051Z
+                at 2025-08-01T21:17:23.473Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

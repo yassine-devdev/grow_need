@@ -90,6 +90,7 @@ export const createMockAIResponse = (overrides = {}) => ({
   content: 'Test AI response content',
   timestamp: new Date().toISOString(),
   role: 'assistant' as const,
+  confidence: 0.95,
   ...overrides,
 });
 
@@ -98,6 +99,71 @@ export const createMockChatSession = (overrides = {}) => ({
   sendMessage: jest.fn(),
   sendMessageStream: jest.fn(),
   getHistory: jest.fn().mockReturnValue([]),
+  clearHistory: jest.fn(),
+  isTyping: false,
+  ...overrides,
+});
+
+// Mock CRM data factories
+export const createMockStudent = (overrides = {}) => ({
+  id: generateTestId('student'),
+  name: 'John Doe',
+  email: 'john.doe@example.com',
+  grade: '10th',
+  dateEnrolled: '2024-01-15',
+  status: 'active',
+  courses: ['Math', 'Science'],
+  gpa: 3.8,
+  ...overrides,
+});
+
+export const createMockTeacher = (overrides = {}) => ({
+  id: generateTestId('teacher'),
+  name: 'Jane Smith',
+  email: 'jane.smith@school.edu',
+  department: 'Mathematics',
+  dateHired: '2020-08-01',
+  status: 'active',
+  courses: ['Algebra', 'Calculus'],
+  ...overrides,
+});
+
+export const createMockParent = (overrides = {}) => ({
+  id: generateTestId('parent'),
+  name: 'Robert Doe',
+  email: 'robert.doe@example.com',
+  phone: '555-0123',
+  students: ['student-1'],
+  emergencyContact: true,
+  ...overrides,
+});
+
+// Mock API responses
+export const createMockAPIResponse = (data: any, overrides = {}) => ({
+  ok: true,
+  status: 200,
+  json: async () => data,
+  text: async () => JSON.stringify(data),
+  ...overrides,
+});
+
+export const createMockAPIError = (status = 500, message = 'Server Error') => ({
+  ok: false,
+  status,
+  statusText: message,
+  json: async () => ({ error: message }),
+  text: async () => message,
+});
+
+// Mock analytics data
+export const createMockAnalyticsData = (overrides = {}) => ({
+  totalStudents: 1284,
+  totalTeachers: 45,
+  totalParents: 850,
+  activeUsers: 1150,
+  engagementRate: 85,
+  revenueGrowth: 12.5,
+  enrollmentGrowth: 8.3,
   ...overrides,
 });
 
@@ -125,6 +191,66 @@ export const mockResizeObserver = () => {
   window.ResizeObserver = mockResizeObserver;
 };
 
+export const mockMatchMedia = (matches = false) => {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: jest.fn().mockImplementation(query => ({
+      matches,
+      media: query,
+      onchange: null,
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    })),
+  });
+};
+
+export const mockLocalStorage = () => {
+  const localStorageMock = (() => {
+    let store: { [key: string]: string } = {};
+    return {
+      getItem: jest.fn((key: string) => store[key] || null),
+      setItem: jest.fn((key: string, value: string) => {
+        store[key] = value.toString();
+      }),
+      removeItem: jest.fn((key: string) => {
+        delete store[key];
+      }),
+      clear: jest.fn(() => {
+        store = {};
+      }),
+    };
+  })();
+
+  Object.defineProperty(window, 'localStorage', {
+    value: localStorageMock,
+  });
+
+  return localStorageMock;
+};
+
+export const mockFetch = (responses: any[] = []) => {
+  const fetchMock = jest.fn();
+  
+  responses.forEach((response, index) => {
+    if (response instanceof Error) {
+      fetchMock.mockRejectedValueOnce(response);
+    } else {
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => response,
+        ...response,
+      });
+    }
+  });
+
+  global.fetch = fetchMock;
+  return fetchMock;
+};
+
 // Custom matchers
 export const expectElementToBeVisible = (element: HTMLElement) => {
   expect(element).toBeInTheDocument();
@@ -134,6 +260,21 @@ export const expectElementToBeVisible = (element: HTMLElement) => {
 export const expectElementToHaveText = (element: HTMLElement, text: string) => {
   expect(element).toBeInTheDocument();
   expect(element).toHaveTextContent(text);
+};
+
+export const expectAPICallToHaveBeenMade = (url: string, options = {}) => {
+  expect(global.fetch).toHaveBeenCalledWith(
+    expect.stringContaining(url),
+    expect.objectContaining(options)
+  );
+};
+
+export const expectLoadingStateToBeShown = (container: HTMLElement) => {
+  expect(container.querySelector('[data-testid*="loading"], .loading, .spinner')).toBeInTheDocument();
+};
+
+export const expectErrorStateToBeShown = (container: HTMLElement) => {
+  expect(container.querySelector('[data-testid*="error"], .error, .alert-error')).toBeInTheDocument();
 };
 
 // Test data generators
@@ -147,4 +288,46 @@ export const generateMockProps = (component: string, overrides = {}) => {
   };
   
   return baseProps;
+};
+
+// Utility for testing async operations
+export const waitForAsyncOperations = () => {
+  return new Promise(resolve => {
+    setTimeout(resolve, 0);
+  });
+};
+
+// AI-specific test utilities
+export const createMockAIConversation = (messages: Array<{ role: 'user' | 'assistant', content: string }> = []) => ({
+  id: generateTestId('conversation'),
+  messages: messages.map((msg, index) => ({
+    id: `msg-${index}`,
+    ...msg,
+    timestamp: new Date().toISOString(),
+  })),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+});
+
+export const simulateAITyping = async (duration = 1000) => {
+  return new Promise(resolve => setTimeout(resolve, duration));
+};
+
+// Form testing utilities
+export const fillForm = async (fields: Record<string, string>, user: any) => {
+  for (const [fieldName, value] of Object.entries(fields)) {
+    const field = document.querySelector(`[name="${fieldName}"]`) as HTMLInputElement;
+    if (field) {
+      await user.clear(field);
+      await user.type(field, value);
+    }
+  }
+};
+
+export const submitForm = async (formTestId: string, user: any) => {
+  const form = document.querySelector(`[data-testid="${formTestId}"]`);
+  const submitButton = form?.querySelector('button[type="submit"]') || form?.querySelector('button:last-child');
+  if (submitButton) {
+    await user.click(submitButton);
+  }
 };

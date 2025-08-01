@@ -27,6 +27,12 @@ export default {
     '/integration-backup/',
     '/database/',
   ],
+
+  // Module path ignores to prevent haste collisions  
+  modulePathIgnorePatterns: [
+    '<rootDir>/integration-backup/',
+    '<rootDir>/database/',
+  ],
   
   // Coverage configuration
   collectCoverage: true,
@@ -44,15 +50,28 @@ export default {
     '!src/**/*.spec.{ts,tsx}',
   ],
   
-  // Coverage thresholds (disabled for now)
-  // coverageThreshold: {
-  //   global: {
-  //     branches: 70,
-  //     functions: 70,
-  //     lines: 70,
-  //     statements: 70,
-  //   },
-  // },
+  // Coverage thresholds
+  coverageThreshold: {
+    global: {
+      branches: 60,
+      functions: 60,
+      lines: 65,
+      statements: 65,
+    },
+    // Specific thresholds for critical modules
+    './src/services/': {
+      branches: 70,
+      functions: 70,
+      lines: 75,
+      statements: 75,
+    },
+    './src/components/modules/concierge-ai/': {
+      branches: 65,
+      functions: 65,
+      lines: 70,
+      statements: 70,
+    },
+  },
   
   // Coverage reporters
   coverageReporters: ['text', 'lcov', 'html'],
@@ -86,6 +105,5 @@ export default {
   
   // Error handling
   errorOnDeprecated: true,
-  
 
 };

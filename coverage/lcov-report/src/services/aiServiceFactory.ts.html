@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">12.26% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/106</span>
+                <span class='fraction'>13/106</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">7.92% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/101</span>
+                <span class='fraction'>8/101</span>
             </div>
         
             
@@ -391,7 +391,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -415,7 +415,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -682,38 +682,38 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * AI Service Factory
  * Provides unified interface for creating AI service instances
  * Handles feature flags and graceful fallbacks
  */
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import { EnhancedAIProvider } from './enhancedAIProvider';</span>
+import { EnhancedAIProvider } from './enhancedAIProvider';
 &nbsp;
 // Import existing services for backward compatibility
 interface LegacyAIProvider {
@@ -737,7 +737,7 @@ interface ServiceConfig {
   fallbackToLegacy?: boolean;
 }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >export class A</span>IServiceFactory {
+export class AIServiceFactory {
   private static instance: AIServiceFactory;
   private config: ServiceConfig;
   private <span class="cstat-no" title="statement not covered" >enhancedProvider: EnhancedAIProvider | null = null;</span>
@@ -1004,31 +1004,31 @@ interface ServiceConfig {
 }
 &nbsp;
 // Export convenience functions
-export const <span class="cstat-no" title="statement not covered" >createAIProvider = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(</span>f</span>orceEnhanced = <span class="branch-0 cbranch-no" title="branch not covered" >false)</span> =&gt; {</span>
+export const createAIProvider = <span class="fstat-no" title="function not covered" >(f</span>orceEnhanced = <span class="branch-0 cbranch-no" title="branch not covered" >false)</span> =&gt; {
   const factory = <span class="cstat-no" title="statement not covered" >AIServiceFactory.getInstance();</span>
 <span class="cstat-no" title="statement not covered" >  return factory.createProvider(forceEnhanced);</span>
 };
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >createEnhancedAI = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(</span>v</span>ectorDBUrl?: string) =&gt; {</span>
+export const createEnhancedAI = <span class="fstat-no" title="function not covered" >(v</span>ectorDBUrl?: string) =&gt; {
 <span class="cstat-no" title="statement not covered" >  return AIServiceFactory.createEnhanced(vectorDBUrl);</span>
 };
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >createLegacyAI = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(</span>) =</span>&gt; {</span>
+export const createLegacyAI = <span class="fstat-no" title="function not covered" >() =</span>&gt; {
 <span class="cstat-no" title="statement not covered" >  return AIServiceFactory.createLegacy();</span>
 };
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >getSystemStatus = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(</span>) =</span>&gt; {</span>
+export const getSystemStatus = <span class="fstat-no" title="function not covered" >() =</span>&gt; {
   const factory = <span class="cstat-no" title="statement not covered" >AIServiceFactory.getInstance();</span>
 <span class="cstat-no" title="statement not covered" >  return factory.getSystemStatus();</span>
 };
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >isEnhancedAvailable = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(</span>) =</span>&gt; {</span>
+export const isEnhancedAvailable = <span class="fstat-no" title="function not covered" >() =</span>&gt; {
   const factory = <span class="cstat-no" title="statement not covered" >AIServiceFactory.getInstance();</span>
 <span class="cstat-no" title="statement not covered" >  return factory.isEnhancedAvailable();</span>
 };
 &nbsp;
 // Export default factory instance
-<span class="cstat-no" title="statement not covered" >export default AIServiceFactory;</span>
+export default AIServiceFactory;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -1036,7 +1036,7 @@ export const <span class="cstat-no" title="statement not covered" >isEnhancedAva
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-08-01T11:06:38.051Z
+                at 2025-08-01T21:17:23.252Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
