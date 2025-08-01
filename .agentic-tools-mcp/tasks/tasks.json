@@ -1,0 +1,31 @@
+{
+  "projects": [
+    {
+      "id": "c65a8ef6-e84c-4072-95f0-a23b45e25db2",
+      "name": "Agentic Tools MCP Integration",
+      "description": "Integration of the agentic-tools-mcp server to enhance AI capabilities with advanced task management, agent memories, and intelligent workflow automation",
+      "createdAt": "2025-07-31T23:05:59.891Z",
+      "updatedAt": "2025-07-31T23:05:59.891Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "e9effc7c-b00d-4ec8-ba57-161d8146b89d",
+      "name": "fully functional real",
+      "details": "make all functional real work",
+      "projectId": "c65a8ef6-e84c-4072-95f0-a23b45e25db2",
+      "completed": false,
+      "createdAt": "2025-08-01T12:42:22.138Z",
+      "updatedAt": "2025-08-01T12:42:22.138Z",
+      "dependsOn": [],
+      "priority": 10,
+      "complexity": 8,
+      "status": "pending",
+      "tags": []
+    }
+  ],
+  "subtasks": [],
+  "migration": {
+    "version": "1.8.1"
+  }
+}

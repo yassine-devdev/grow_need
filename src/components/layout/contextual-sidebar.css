@@ -1,0 +1,18 @@
+
+.contextual-sidebar-container-bordered {
+  background: var(--contextual-nav-background);
+  border: var(--contextual-nav-border);
+  box-shadow: var(--contextual-nav-box-shadow);
+  border-radius: 9999px;
+  backdrop-filter: var(--contextual-nav-backdrop-filter);
+}
+
+/* Specific styling for buttons inside to use variables */
+.contextual-sidebar-container-bordered button {
+    color: var(--contextual-nav-icon);
+}
+
+.contextual-sidebar-container-bordered button:hover {
+    background-color: var(--contextual-nav-icon-hover-bg);
+    color: var(--contextual-nav-icon-hover-text);
+}

@@ -1,0 +1,44 @@
+# Vector Database Requirements
+# Core vector database and AI libraries
+chromadb>=0.4.15
+numpy>=1.24.0
+pandas>=2.0.0
+
+# File processing libraries
+PyPDF2>=3.0.1
+python-docx>=0.8.11
+markdown>=3.5.1
+beautifulsoup4>=4.12.2
+pyyaml>=6.0.1
+
+# Web interface
+flask>=2.3.3
+flask-cors>=4.0.0
+werkzeug>=2.3.7
+
+# HTTP requests for Ollama integration
+requests>=2.31.0
+
+# Additional utilities
+pathlib2>=2.3.7
+python-magic>=0.4.27
+chardet>=5.2.0
+
+# Optional: Enhanced text processing
+nltk>=3.8.1
+spacy>=3.7.0
+
+# Optional: Advanced document processing
+python-pptx>=0.6.21
+openpyxl>=3.1.2
+xlrd>=2.0.1
+
+# Optional: Image processing for OCR
+Pillow>=10.0.0
+pytesseract>=0.3.10
+
+# Development and testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+black>=23.7.0
+flake8>=6.0.0

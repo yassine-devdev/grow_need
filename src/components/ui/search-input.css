@@ -1,0 +1,23 @@
+
+.search-input-bordered {
+    background: var(--search-input-background);
+    border: var(--search-input-border);
+    border-radius: 9999px;
+    height: 2.25rem; /* h-9 */
+    padding-inline-start: 2.5rem; /* pl-10 */
+    padding-inline-end: 1rem; /* pr-4 */
+    font-size: 0.875rem; /* text-sm */
+    transition: all 0.3s;
+    width: 100%;
+    color: var(--search-input-text);
+    box-shadow: var(--search-input-box-shadow);
+}
+.search-input-bordered::placeholder {
+    color: var(--search-input-placeholder);
+}
+
+.search-input-bordered:focus {
+    outline: none;
+    border: var(--search-input-focus-border);
+    box-shadow: var(--search-input-focus-box-shadow);
+}

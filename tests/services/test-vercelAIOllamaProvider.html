@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Vercel AI Ollama Provider</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+        .test-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        .test-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        .test-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #059669;
+        }
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #dc2626;
+        }
+        .info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #2563eb;
+        }
+        .streaming {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            color: #667eea;
+        }
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Test: Vercel AI Ollama Provider</h1>
+            <p>Testing the custom Ollama provider implementation for Vercel AI SDK</p>
+        </div>
+
+        <div class="test-section">
+            <h3>1. Provider Initialization Test</h3>
+            <p>Test creating and configuring the Ollama provider</p>
+            <button class="test-button" onclick="testProviderInit()">Test Provider Init</button>
+            <div id="initResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Connection Test</h3>
+            <p>Test connection to Ollama server</p>
+            <button class="test-button" onclick="testConnection()">Test Connection</button>
+            <div id="connectionResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Basic Generation Test</h3>
+            <p>Test basic text generation (non-streaming)</p>
+            <button class="test-button" onclick="testBasicGeneration()">Test Generation</button>
+            <div id="generationResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Streaming Test</h3>
+            <p>Test streaming text generation</p>
+            <button class="test-button" onclick="testStreaming()">Test Streaming</button>
+            <div id="streamingResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>5. Model Selection Test</h3>
+            <p>Test optimal model selection for different tasks</p>
+            <button class="test-button" onclick="testModelSelection()">Test Model Selection</button>
+            <div id="modelResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>6. Error Handling Test</h3>
+            <p>Test error handling with invalid requests</p>
+            <button class="test-button" onclick="testErrorHandling()">Test Error Handling</button>
+            <div id="errorResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const baseURL = 'http://localhost:11434';
+
+        // Mock implementation of the provider for testing
+        class TestVercelAIOllamaProvider {
+            constructor(modelId, config = {}) {
+                this.specificationVersion = 'v1';
+                this.provider = 'ollama';
+                this.modelId = modelId;
+                this.baseURL = config.baseURL || 'http://localhost:11434';
+                this.defaultObjectGenerationMode = 'json';
+            }
+
+            async doGenerate(options) {
+                const { prompt, messages, temperature, maxTokens } = options;
+                
+                const requestBody = {
+                    model: this.modelId,
+                    messages: this.formatMessages(messages || [{ role: 'user', content: prompt }]),
+                    stream: false,
+                    options: {
+                        temperature: temperature || 0.7,
+                        num_predict: maxTokens || 1000,
+                    }
+                };
+
+                const response = await fetch(`${this.baseURL}/api/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                
+                return {
+                    text: data.message?.content || '',
+                    finishReason: 'stop',
+                    usage: {
+                        promptTokens: data.prompt_eval_count || 0,
+                        completionTokens: data.eval_count || 0,
+                    },
+                };
+            }
+
+            async doStream(options) {
+                const { prompt, messages, temperature, maxTokens } = options;
+                
+                const requestBody = {
+                    model: this.modelId,
+                    messages: this.formatMessages(messages || [{ role: 'user', content: prompt }]),
+                    stream: true,
+                    options: {
+                        temperature: temperature || 0.7,
+                        num_predict: maxTokens || 1000,
+                    }
+                };
+
+                const response = await fetch(`${this.baseURL}/api/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
+                }
+
+                return new ReadableStream({
+                    async start(controller) {
+                        const reader = response.body?.getReader();
+                        if (!reader) {
+                            controller.close();
+                            return;
+                        }
+
+                        const decoder = new TextDecoder();
+                        let buffer = '';
+
+                        try {
+                            while (true) {
+                                const { done, value } = await reader.read();
+                                if (done) break;
+
+                                buffer += decoder.decode(value, { stream: true });
+                                const lines = buffer.split('\n');
+                                buffer = lines.pop() || '';
+
+                                for (const line of lines) {
+                                    if (line.trim()) {
+                                        try {
+                                            const data = JSON.parse(line);
+                                            if (data.message?.content) {
+                                                controller.enqueue({
+                                                    type: 'text-delta',
+                                                    textDelta: data.message.content,
+                                                });
+                                            }
+                                            if (data.done) {
+                                                controller.enqueue({
+                                                    type: 'finish',
+                                                    finishReason: 'stop',
+                                                    usage: {
+                                                        promptTokens: data.prompt_eval_count || 0,
+                                                        completionTokens: data.eval_count || 0,
+                                                    },
+                                                });
+                                            }
+                                        } catch (e) {
+                                            // Skip invalid JSON lines
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (error) {
+                            controller.error(error);
+                        } finally {
+                            controller.close();
+                        }
+                    },
+                });
+            }
+
+            formatMessages(messages) {
+                return messages.map(msg => ({
+                    role: msg.role === 'assistant' ? 'assistant' : msg.role,
+                    content: typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)
+                }));
+            }
+        }
+
+        function createOllama(config = {}) {
+            return (modelId) => new TestVercelAIOllamaProvider(modelId, config);
+        }
+
+        const educationalModels = {
+            general: 'qwen2.5:3b-instruct',
+            math: 'qwen2.5:3b-instruct',
+            creative: 'llama2:latest',
+            coding: 'deepseek-coder:1.3b-instruct',
+            analysis: 'gemma3:4b',
+            reasoning: 'nemotron-mini:4b'
+        };
+
+        function getOptimalModel(taskType) {
+            const modelMap = {
+                'lesson-plan': educationalModels.general,
+                'quiz-generation': educationalModels.general,
+                'math-tutoring': educationalModels.math,
+                'creative-writing': educationalModels.creative,
+                'code-help': educationalModels.coding,
+                'essay-grading': educationalModels.analysis,
+                'problem-solving': educationalModels.reasoning,
+                'general-chat': educationalModels.general,
+            };
+            
+            return modelMap[taskType] || educationalModels.general;
+        }
+
+        // Test functions
+        async function testProviderInit() {
+            const resultDiv = document.getElementById('initResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.textContent = 'Testing provider initialization...';
+
+            try {
+                // Test basic initialization
+                const ollama = createOllama({ baseURL: baseURL });
+                const provider = ollama('qwen2.5:3b-instruct');
+
+                // Verify properties
+                const tests = [
+                    { name: 'Provider type', value: provider.provider, expected: 'ollama' },
+                    { name: 'Specification version', value: provider.specificationVersion, expected: 'v1' },
+                    { name: 'Model ID', value: provider.modelId, expected: 'qwen2.5:3b-instruct' },
+                    { name: 'Base URL', value: provider.baseURL, expected: baseURL },
+                    { name: 'Default mode', value: provider.defaultObjectGenerationMode, expected: 'json' }
+                ];
+
+                let results = 'Provider Initialization Test Results:\n\n';
+                let allPassed = true;
+
+                tests.forEach(test => {
+                    const passed = test.value === test.expected;
+                    results += `${passed ? '✅' : '❌'} ${test.name}: ${test.value}\n`;
+                    if (!passed) allPassed = false;
+                });
+
+                results += `\nOverall: ${allPassed ? 'PASSED' : 'FAILED'}`;
+
+                resultDiv.className = `result ${allPassed ? 'success' : 'error'}`;
+                resultDiv.textContent = results;
+
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function testConnection() {
+            const resultDiv = document.getElementById('connectionResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.textContent = 'Testing connection to Ollama...';
+
+            try {
+                const response = await fetch(`${baseURL}/api/tags`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const models = data.models || [];
+                    
+                    let result = 'Connection Test Results:\n\n';
+                    result += `✅ Connection: SUCCESS\n`;
+                    result += `✅ Status: ${response.status} ${response.statusText}\n`;
+                    result += `✅ Available Models: ${models.length}\n\n`;
+                    
+                    if (models.length > 0) {
+                        result += 'Models:\n';
+                        models.forEach(model => {
+                            result += `  - ${model.name} (${model.details?.parameter_size || 'Unknown size'})\n`;
+                        });
+                    }
+
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = result;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Connection failed: ${error.message}\n\nMake sure Ollama is running on ${baseURL}`;
+            }
+        }
+
+        async function testBasicGeneration() {
+            const resultDiv = document.getElementById('generationResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.textContent = 'Testing basic generation...';
+
+            try {
+                const ollama = createOllama({ baseURL: baseURL });
+                const provider = ollama('qwen2.5:3b-instruct');
+
+                const startTime = Date.now();
+                const result = await provider.doGenerate({
+                    prompt: 'Say hello and introduce yourself as an AI assistant in exactly one sentence.',
+                    temperature: 0.7,
+                    maxTokens: 100
+                });
+                const endTime = Date.now();
+
+                let output = 'Basic Generation Test Results:\n\n';
+                output += `✅ Generation: SUCCESS\n`;
+                output += `✅ Response time: ${endTime - startTime}ms\n`;
+                output += `✅ Finish reason: ${result.finishReason}\n`;
+                output += `✅ Prompt tokens: ${result.usage.promptTokens}\n`;
+                output += `✅ Completion tokens: ${result.usage.completionTokens}\n\n`;
+                output += `Generated text:\n"${result.text}"\n\n`;
+                output += `Text length: ${result.text.length} characters`;
+
+                resultDiv.className = 'result success';
+                resultDiv.textContent = output;
+
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Generation failed: ${error.message}`;
+            }
+        }
+
+        async function testStreaming() {
+            const resultDiv = document.getElementById('streamingResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result streaming';
+            resultDiv.textContent = 'Testing streaming generation...\n\nStreaming response:\n';
+
+            try {
+                const ollama = createOllama({ baseURL: baseURL });
+                const provider = ollama('qwen2.5:3b-instruct');
+
+                const startTime = Date.now();
+                const stream = await provider.doStream({
+                    prompt: 'Count from 1 to 5 and explain what each number represents.',
+                    temperature: 0.7,
+                    maxTokens: 200
+                });
+
+                const reader = stream.getReader();
+                let fullText = '';
+                let chunkCount = 0;
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    if (value.type === 'text-delta') {
+                        fullText += value.textDelta;
+                        chunkCount++;
+                        resultDiv.textContent = `Testing streaming generation...\n\nChunks received: ${chunkCount}\n\nStreaming response:\n${fullText}`;
+                    } else if (value.type === 'finish') {
+                        const endTime = Date.now();
+                        let finalOutput = 'Streaming Test Results:\n\n';
+                        finalOutput += `✅ Streaming: SUCCESS\n`;
+                        finalOutput += `✅ Total time: ${endTime - startTime}ms\n`;
+                        finalOutput += `✅ Chunks received: ${chunkCount}\n`;
+                        finalOutput += `✅ Finish reason: ${value.finishReason}\n`;
+                        finalOutput += `✅ Prompt tokens: ${value.usage.promptTokens}\n`;
+                        finalOutput += `✅ Completion tokens: ${value.usage.completionTokens}\n\n`;
+                        finalOutput += `Final text:\n"${fullText}"\n\n`;
+                        finalOutput += `Text length: ${fullText.length} characters`;
+
+                        resultDiv.className = 'result success';
+                        resultDiv.textContent = finalOutput;
+                        break;
+                    }
+                }
+
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Streaming failed: ${error.message}`;
+            }
+        }
+
+        async function testModelSelection() {
+            const resultDiv = document.getElementById('modelResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.textContent = 'Testing model selection logic...';
+
+            try {
+                const testCases = [
+                    { task: 'lesson-plan', expected: 'qwen2.5:3b-instruct' },
+                    { task: 'math-tutoring', expected: 'qwen2.5:3b-instruct' },
+                    { task: 'creative-writing', expected: 'llama2:latest' },
+                    { task: 'code-help', expected: 'deepseek-coder:1.3b-instruct' },
+                    { task: 'essay-grading', expected: 'gemma3:4b' },
+                    { task: 'problem-solving', expected: 'nemotron-mini:4b' },
+                    { task: 'unknown-task', expected: 'qwen2.5:3b-instruct' }
+                ];
+
+                let results = 'Model Selection Test Results:\n\n';
+                let allPassed = true;
+
+                testCases.forEach(testCase => {
+                    const selected = getOptimalModel(testCase.task);
+                    const passed = selected === testCase.expected;
+                    results += `${passed ? '✅' : '❌'} ${testCase.task}: ${selected}\n`;
+                    if (!passed) allPassed = false;
+                });
+
+                results += `\nEducational Models Configuration:\n`;
+                Object.entries(educationalModels).forEach(([key, value]) => {
+                    results += `  ${key}: ${value}\n`;
+                });
+
+                results += `\nOverall: ${allPassed ? 'PASSED' : 'FAILED'}`;
+
+                resultDiv.className = `result ${allPassed ? 'success' : 'error'}`;
+                resultDiv.textContent = results;
+
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Model selection test failed: ${error.message}`;
+            }
+        }
+
+        async function testErrorHandling() {
+            const resultDiv = document.getElementById('errorResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.textContent = 'Testing error handling...';
+
+            try {
+                let results = 'Error Handling Test Results:\n\n';
+                let testsPassed = 0;
+                let totalTests = 0;
+
+                // Test 1: Invalid model
+                totalTests++;
+                try {
+                    const ollama = createOllama({ baseURL: baseURL });
+                    const provider = ollama('invalid-model-name');
+                    await provider.doGenerate({ prompt: 'test' });
+                    results += '❌ Invalid model test: Should have thrown error\n';
+                } catch (error) {
+                    results += '✅ Invalid model test: Correctly threw error\n';
+                    testsPassed++;
+                }
+
+                // Test 2: Invalid base URL
+                totalTests++;
+                try {
+                    const ollama = createOllama({ baseURL: 'http://invalid-url:11434' });
+                    const provider = ollama('qwen2.5:3b-instruct');
+                    await provider.doGenerate({ prompt: 'test' });
+                    results += '❌ Invalid URL test: Should have thrown error\n';
+                } catch (error) {
+                    results += '✅ Invalid URL test: Correctly threw error\n';
+                    testsPassed++;
+                }
+
+                // Test 3: Message formatting
+                totalTests++;
+                try {
+                    const ollama = createOllama({ baseURL: baseURL });
+                    const provider = ollama('qwen2.5:3b-instruct');
+                    
+                    const messages = [
+                        { role: 'user', content: 'test' },
+                        { role: 'assistant', content: 'response' },
+                        { role: 'user', content: { complex: 'object' } }
+                    ];
+                    
+                    const formatted = provider.formatMessages(messages);
+                    const allStrings = formatted.every(msg => typeof msg.content === 'string');
+                    
+                    if (allStrings) {
+                        results += '✅ Message formatting test: Correctly formatted complex objects\n';
+                        testsPassed++;
+                    } else {
+                        results += '❌ Message formatting test: Failed to format messages\n';
+                    }
+                } catch (error) {
+                    results += `❌ Message formatting test: ${error.message}\n`;
+                }
+
+                results += `\nTests passed: ${testsPassed}/${totalTests}`;
+                results += `\nOverall: ${testsPassed === totalTests ? 'PASSED' : 'FAILED'}`;
+
+                resultDiv.className = `result ${testsPassed === totalTests ? 'success' : 'error'}`;
+                resultDiv.textContent = results;
+
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Error handling test failed: ${error.message}`;
+            }
+        }
+
+        // Auto-run connection test on load
+        window.addEventListener('load', () => {
+            setTimeout(testConnection, 1000);
+        });
+    </script>
+</body>
+</html>

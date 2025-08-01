@@ -1,0 +1,31 @@
+
+.main-nav-open {
+    width: var(--main-nav-width, 72px);
+}
+
+.main-nav-inner-container {
+    width: var(--main-nav-width, 72px);
+}
+
+.main-nav-btn {
+    width: calc(var(--main-nav-width, 72px) - 24px);
+    height: calc(var(--main-nav-width, 72px) - 24px);
+}
+
+.main-nav-icon {
+    width: var(--main-nav-icon-size, 28px);
+    height: var(--main-nav-icon-size, 28px);
+}
+
+.main-nav-sidebar-container-bordered {
+  background: var(--main-nav-background);
+  border: var(--main-nav-border);
+  box-shadow: var(--main-nav-box-shadow);
+  border-radius: 9999px;
+  backdrop-filter: var(--main-nav-backdrop-filter);
+}
+
+/* Override for active button ring color */
+.main-nav-sidebar-container-bordered button.ring-2 {
+    ring-color: var(--main-nav-icon-active-ring);
+}

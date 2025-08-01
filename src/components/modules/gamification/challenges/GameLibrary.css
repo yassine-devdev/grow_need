@@ -1,0 +1,110 @@
+.game-library-container {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    background-color: #1A162D;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.game-lib-section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.game-lib-section-header h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white;
+}
+
+.game-lib-carousel {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 1rem; /* Space for scrollbar */
+}
+
+/* Custom scrollbar for webkit browsers */
+.game-lib-carousel::-webkit-scrollbar { height: 8px; }
+.game-lib-carousel::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 4px; }
+.game-lib-carousel::-webkit-scrollbar-thumb { background: #22c55e; border-radius: 4px; }
+.game-lib-carousel::-webkit-scrollbar-thumb:hover { background: #4ade80; }
+
+
+.game-lib-card {
+    position: relative;
+    flex-shrink: 0;
+    width: 180px;
+    height: 180px;
+    border-radius: 1rem;
+    overflow: hidden;
+    background-color: #272140;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.game-lib-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+    border-color: #22c55e;
+}
+
+.game-lib-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+.game-lib-card:hover .game-lib-card-img {
+    transform: scale(1.1);
+}
+
+.game-lib-card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.75rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+}
+
+.game-lib-card-title {
+    font-weight: 600;
+    color: white;
+    font-size: 1rem;
+}
+
+.game-lib-card-category {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.game-lib-play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background-color: rgba(34, 197, 94, 0.8);
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border: none;
+    backdrop-filter: blur(4px);
+}
+
+.game-lib-card:hover .game-lib-play-btn {
+    opacity: 1;
+}

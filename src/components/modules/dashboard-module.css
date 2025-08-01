@@ -1,0 +1,8 @@
+
+.chart-container-bordered {
+  background: var(--card-background);
+  border: var(--card-border);
+  box-shadow: var(--card-box-shadow);
+  border-radius: var(--border-radius-global);
+  backdrop-filter: var(--card-backdrop-filter);
+}

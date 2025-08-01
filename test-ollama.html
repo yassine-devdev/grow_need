@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ollama Integration Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .connected { background: rgba(16, 185, 129, 0.2); }
+        .disconnected { background: rgba(239, 68, 68, 0.2); }
+        button {
+            background: rgba(59, 130, 246, 0.8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: rgba(59, 130, 246, 1); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        textarea {
+            width: 100%;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            padding: 10px;
+            resize: vertical;
+        }
+        .response {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Ollama Integration Test</h1>
+        
+        <div id="status" class="status disconnected">
+            <strong>Status:</strong> <span id="statusText">Checking connection...</span>
+        </div>
+
+        <div>
+            <h3>Available Models:</h3>
+            <ul id="modelsList">Loading...</ul>
+        </div>
+
+        <div>
+            <h3>Test AI Generation:</h3>
+            <textarea id="prompt" placeholder="Enter your prompt here...">Hello! Please introduce yourself as Aura Concierge, an AI assistant for a school management platform.</textarea>
+            <br>
+            <button id="testBtn" onclick="testGeneration()">Test Generation</button>
+            <button onclick="clearResponse()">Clear</button>
+        </div>
+
+        <div id="response" class="response" style="display: none;"></div>
+    </div>
+
+    <script>
+        const baseUrl = 'http://localhost:11434';
+        let isConnected = false;
+
+        async function checkConnection() {
+            try {
+                const response = await fetch(`${baseUrl}/api/tags`);
+                if (response.ok) {
+                    isConnected = true;
+                    document.getElementById('status').className = 'status connected';
+                    document.getElementById('statusText').textContent = 'Connected to Ollama';
+                    
+                    const data = await response.json();
+                    const modelsList = document.getElementById('modelsList');
+                    modelsList.innerHTML = '';
+                    
+                    if (data.models && data.models.length > 0) {
+                        data.models.forEach(model => {
+                            const li = document.createElement('li');
+                            li.textContent = `${model.name} (${model.details.parameter_size})`;
+                            modelsList.appendChild(li);
+                        });
+                    } else {
+                        modelsList.innerHTML = '<li>No models found</li>';
+                    }
+                } else {
+                    throw new Error('Ollama not responding');
+                }
+            } catch (error) {
+                isConnected = false;
+                document.getElementById('status').className = 'status disconnected';
+                document.getElementById('statusText').textContent = 'Disconnected - Make sure Ollama is running';
+                document.getElementById('modelsList').innerHTML = '<li>Unable to load models</li>';
+            }
+        }
+
+        async function testGeneration() {
+            if (!isConnected) {
+                alert('Not connected to Ollama');
+                return;
+            }
+
+            const prompt = document.getElementById('prompt').value;
+            if (!prompt.trim()) {
+                alert('Please enter a prompt');
+                return;
+            }
+
+            const testBtn = document.getElementById('testBtn');
+            const responseDiv = document.getElementById('response');
+            
+            testBtn.disabled = true;
+            testBtn.textContent = 'Generating...';
+            responseDiv.style.display = 'block';
+            responseDiv.textContent = 'Generating response...';
+
+            try {
+                const response = await fetch(`${baseUrl}/api/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: 'qwen2.5:3b-instruct',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: 'You are Aura Concierge, a helpful AI assistant for a school management platform. Be friendly and professional.'
+                            },
+                            {
+                                role: 'user',
+                                content: prompt
+                            }
+                        ],
+                        stream: false
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                responseDiv.textContent = `Model: ${data.model}\n\nResponse:\n${data.message.content}`;
+                
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+            } finally {
+                testBtn.disabled = false;
+                testBtn.textContent = 'Test Generation';
+            }
+        }
+
+        function clearResponse() {
+            document.getElementById('response').style.display = 'none';
+        }
+
+        // Check connection on page load
+        checkConnection();
+    </script>
+</body>
+</html>

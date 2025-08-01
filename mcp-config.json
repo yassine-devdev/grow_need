@@ -1,0 +1,46 @@
+{
+  "mcpServers": {
+    "agentic-tools": {
+      "command": "npx",
+      "args": ["-y", "@pimzino/agentic-tools-mcp"],
+      "description": "Advanced task management and agent memories with unlimited hierarchy, dependencies, priorities, and intelligent workflow automation"
+    }
+  },
+  "features": {
+    "taskManagement": {
+      "enabled": true,
+      "unlimitedHierarchy": true,
+      "dependencies": true,
+      "priorities": true,
+      "complexity": true,
+      "timeTracking": true,
+      "tags": true,
+      "statusWorkflow": ["pending", "in-progress", "blocked", "done"]
+    },
+    "agentMemories": {
+      "enabled": true,
+      "intelligentSearch": true,
+      "categorization": true,
+      "metadata": true,
+      "fileStorage": true
+    },
+    "aiAgentTools": {
+      "enabled": true,
+      "prdParsing": true,
+      "taskRecommendations": true,
+      "complexityAnalysis": true,
+      "progressInference": true,
+      "researchIntegration": true
+    },
+    "storage": {
+      "mode": "project-specific",
+      "directory": ".agentic-tools-mcp",
+      "gitTrackable": true
+    }
+  },
+  "integration": {
+    "workingDirectory": "C:\\Users\\Acer\\Downloads\\Video\\grow_need",
+    "projectName": "GROW YouR NEED SaaS School",
+    "description": "Comprehensive school management system with CRM, AI concierge, and educational tools"
+  }
+}

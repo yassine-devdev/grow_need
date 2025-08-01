@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>🔍 Search Content</h2>
+<form method="post">
+    <div class="form-group">
+        <label for="query">Search Query:</label>
+        <input type="text" name="query" id="query" placeholder="Enter your search terms..." required>
+    </div>
+    <div class="form-group">
+        <label for="collection">Collection:</label>
+        <select name="collection" id="collection">
+            <option value="educational_content">All Content</option>
+            <option value="lesson_plans">Lesson Plans</option>
+            <option value="assessments">Assessments</option>
+            <option value="resources">Resources</option>
+        </select>
+    </div>
+    <button type="submit" class="btn">Search</button>
+</form>
+{% if results %}
+<div class="results">
+    <h3>Search Results ({{ results|length }} found)</h3>
+    {% for result in results %}
+    <div class="result-item">
+        <h4>{{ result.metadata.title or 'Untitled' }}</h4>
+        <p>{{ result.content[:200] }}...</p>
+        <small>Subject: {{ result.metadata.subject or 'N/A' }} | Grade: {{ result.metadata.grade_level or 'N/A' }}</small>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,374 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GROW YouR NEED Saas School</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto:wght@300;400;500;700&family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <style id="default-theme-style">
+      :root {
+        /* Base Theme & Layout */
+        --main-background-style: radial-gradient(ellipse 80% 80% at 50% -20%,rgba(120,119,198,0.3), hsla(0,0%,100%,0));
+        --main-background-color: #1e1935;
+        --border-radius-global: 1.5rem; /* 24px */
+        --font-main: 'Roboto', sans-serif;
+        --font-headings: 'Orbitron', sans-serif;
+        --font-mono: 'Source Code Pro', monospace;
+        
+        /* Glassmorphism Styles */
+        --glass-background-base: rgba(46, 37, 82, 0.5);
+        --glass-background-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+        --glass-backdrop-filter: blur(24px);
+        --glass-border: 1px solid rgba(255, 255, 255, 0.18);
+        --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+        /* Header */
+        --header-height: 4rem;
+        --header-padding-y: 0;
+        --header-background: var(--glass-background-gradient), var(--glass-background-base);
+        --header-backdrop-filter: var(--glass-backdrop-filter);
+        --header-border: var(--glass-border);
+        --header-box-shadow: var(--glass-shadow);
+        --header-text: #f3f4f6; /* gray-100 */
+        --header-text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        --header-icon: #d1d5db; /* gray-300 */
+        --header-font-size: 1.25rem;
+
+        /* Dock */
+        --dock-background: var(--glass-background-gradient), var(--glass-background-base);
+        --dock-backdrop-filter: var(--glass-backdrop-filter);
+        --dock-border: var(--glass-border);
+        --dock-box-shadow: var(--glass-shadow);
+        --dock-text: #e5e7eb; /* gray-200 */
+        --dock-icon: #d1d5db; /* gray-300 */
+        --dock-active-button-bg: rgba(192, 132, 252, 0.5);
+
+        /* Main Navigation (Right Sidebar) */
+        --main-nav-width: 72px;
+        --main-nav-icon-size: 28px;
+        --main-nav-background: var(--glass-background-gradient), rgba(46, 37, 82, 0.4);
+        --main-nav-backdrop-filter: var(--glass-backdrop-filter);
+        --main-nav-border: var(--glass-border);
+        --main-nav-box-shadow: var(--glass-shadow);
+        --main-nav-icon-active-ring: rgba(255, 255, 255, 0.7);
+
+        /* Contextual Navigation (Left Sidebar) */
+        --contextual-nav-background: var(--glass-background-gradient), rgba(46, 37, 82, 0.4);
+        --contextual-nav-backdrop-filter: var(--glass-backdrop-filter);
+        --contextual-nav-border: var(--glass-border);
+        --contextual-nav-box-shadow: var(--glass-shadow);
+        --contextual-nav-icon: #9ca3af; /* gray-400 */
+        --contextual-nav-icon-hover-bg: rgba(255, 255, 255, 0.1);
+        --contextual-nav-icon-hover-text: #ffffff;
+        
+        /* General Card Styles */
+        --card-background: var(--glass-background-gradient), rgba(46, 37, 82, 0.3);
+        --card-backdrop-filter: var(--glass-backdrop-filter);
+        --card-border: var(--glass-border);
+        --card-box-shadow: var(--glass-shadow);
+        --card-primary-text: #ffffff;
+        --card-secondary-text: #d1d5db; /* gray-300 */
+        --card-icon-color: #c084fc; /* purple-400 */
+        --card-text-shadow: 0 0 3px rgba(0,0,0,0.4);
+
+        /* Stat Card Specifics */
+        --stat-card-padding: 1rem;
+        --stat-card-title-font-size: 14px;
+        --stat-card-value-font-size: 36px;
+        --stat-card-icon-size: 32px;
+        
+        /* Module Panes (L1 Header, L2 Sidebar) */
+        --module-pane-background: var(--glass-background-gradient), rgba(30, 25, 53, 0.6);
+        --module-pane-backdrop-filter: blur(20px);
+        --module-pane-border: 1px solid rgba(255, 255, 255, 0.1);
+
+        /* L1 Navigation (in modules) */
+        --l1-nav-active-background: linear-gradient(135deg, #c084fc, #f472b6);
+        --l1-nav-active-text: #ffffff;
+        --l1-nav-active-shadow: 0 0 15px rgba(192, 132, 252, 0.6);
+        --l1-nav-hover-background: rgba(255, 255, 255, 0.1);
+
+        /* L2 Navigation (in modules) */
+        --l2-sidebar-background: var(--module-pane-background);
+        --l2-sidebar-backdrop-filter: var(--module-pane-backdrop-filter);
+        --l2-sidebar-border: var(--module-pane-border);
+        --l2-nav-active-background: linear-gradient(135deg, #a855f7, #6366f1);
+        --l2-nav-active-text: #ffffff;
+        --l2-nav-active-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
+
+        /* Search Input */
+        --search-input-background: rgba(0, 0, 0, 0.2);
+        --search-input-border: 1px solid rgba(255, 255, 255, 0.1);
+        --search-input-box-shadow: none;
+        --search-input-text: #ffffff;
+        --search-input-placeholder: #9ca3af;
+        --search-input-focus-border: 1px solid rgba(168, 85, 247, 0.6);
+        --search-input-focus-box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+      }
+      body {
+        background-color: var(--main-background-color);
+        background-image: var(--main-background-style);
+        font-family: var(--font-main);
+        text-align: start;
+      }
+      .font-orbitron { font-family: var(--font-headings); }
+      .font-mono { font-family: var(--font-mono); }
+       /* Custom scrollbar for webkit browsers */
+      ::-webkit-scrollbar { width: 8px; height: 8px; }
+      ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+      ::-webkit-scrollbar-thumb { background: rgba(192, 132, 252, 0.5); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(192, 132, 252, 0.8); }
+
+      /* File Upload Component Styles */
+      .file-upload-component {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .file-upload-dropzone {
+        border: 2px dashed #cbd5e0;
+        border-radius: 12px;
+        padding: 40px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: rgba(247, 250, 252, 0.1);
+        margin-bottom: 20px;
+        backdrop-filter: blur(10px);
+      }
+
+      .file-upload-dropzone:hover {
+        border-color: #4299e1;
+        background: rgba(235, 248, 255, 0.2);
+      }
+
+      .file-upload-dropzone.drag-over {
+        border-color: #3182ce;
+        background: rgba(190, 227, 248, 0.3);
+        transform: scale(1.02);
+      }
+
+      .file-upload-dropzone.processing {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      .upload-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .upload-icon {
+        color: #4299e1;
+        margin-bottom: 8px;
+      }
+
+      .upload-content h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #ffffff;
+        margin: 0;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      }
+
+      .upload-content p {
+        color: #d1d5db;
+        margin: 0;
+      }
+
+      .upload-info {
+        margin-top: 16px;
+        font-size: 0.875rem;
+      }
+
+      .upload-info p {
+        margin: 4px 0;
+        color: #9ca3af;
+      }
+
+      .upload-info .warning {
+        color: #fbbf24;
+        font-weight: 500;
+      }
+
+      .file-list {
+        background: var(--card-background);
+        backdrop-filter: var(--card-backdrop-filter);
+        border-radius: 8px;
+        border: var(--card-border);
+        box-shadow: var(--card-box-shadow);
+        overflow: hidden;
+      }
+
+      .file-list-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 20px;
+        background: rgba(46, 37, 82, 0.3);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .file-list-header h4 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #ffffff;
+      }
+
+      .clear-files-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        background: rgba(239, 68, 68, 0.2);
+        color: #fca5a5;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+        backdrop-filter: blur(10px);
+      }
+
+      .clear-files-btn:hover {
+        background: rgba(239, 68, 68, 0.3);
+        color: #ffffff;
+      }
+
+      .file-items {
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .file-item {
+        padding: 16px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        transition: background 0.2s;
+      }
+
+      .file-item:last-child {
+        border-bottom: none;
+      }
+
+      .file-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .file-item.error {
+        background: rgba(239, 68, 68, 0.1);
+        border-left: 3px solid #ef4444;
+      }
+
+      .file-item.complete {
+        background: rgba(34, 197, 94, 0.1);
+        border-left: 3px solid #22c55e;
+      }
+
+      .file-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+
+      .file-icon {
+        color: #4299e1;
+      }
+
+      .file-details {
+        flex: 1;
+      }
+
+      .file-name {
+        font-weight: 500;
+        color: #ffffff;
+        margin-bottom: 2px;
+      }
+
+      .file-meta {
+        font-size: 0.875rem;
+        color: #9ca3af;
+      }
+
+      .file-status {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+
+      .status-text {
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: capitalize;
+        color: #d1d5db;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #4299e1, #3182ce);
+        transition: width 0.3s ease;
+      }
+
+      .error-message {
+        color: #fca5a5;
+        font-size: 0.875rem;
+        margin-top: 4px;
+        padding: 8px;
+        background: rgba(239, 68, 68, 0.1);
+        border-radius: 4px;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+      }
+
+      .processing-results {
+        margin-top: 8px;
+      }
+
+      .result-stats {
+        font-size: 0.875rem;
+        color: #d1d5db;
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "recharts": "https://esm.sh/recharts@^3.1.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.525.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.11.0",
+    "uuid": "https://esm.sh/uuid@^11.1.0"
+  }
+}
+</script>
+
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  </body>
+</html>

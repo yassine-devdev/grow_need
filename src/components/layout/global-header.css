@@ -1,0 +1,51 @@
+
+.global-header-container-bordered {
+  background: var(--header-background);
+  border: var(--header-border);
+  box-shadow: var(--header-box-shadow);
+  border-radius: var(--border-radius-global);
+  backdrop-filter: var(--header-backdrop-filter);
+  height: var(--header-height, 4rem);
+  padding-top: var(--header-padding-y, 0);
+  padding-bottom: var(--header-padding-y, 0);
+}
+
+.global-header-container-bordered h1 {
+  color: var(--header-text);
+  text-shadow: var(--header-text-shadow);
+  font-size: var(--header-font-size, 1.25rem);
+}
+
+.global-header-container-bordered .relative svg,
+.global-header-container-bordered .cart-button svg {
+  color: var(--header-icon);
+}
+
+
+.cart-button {
+    position: relative;
+    padding: 0.5rem;
+    border-radius: 9999px;
+    transition: background-color 0.2s;
+}
+.cart-button:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+.cart-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background-color: #ef4444; /* red-500 */
+    color: white;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    border-radius: 9999px;
+    height: 1.25rem;
+    width: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    border: 2px solid var(--main-background-color);
+}

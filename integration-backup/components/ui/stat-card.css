@@ -1,0 +1,32 @@
+
+.stat-card-bordered {
+  background: var(--card-background);
+  border: var(--card-border);
+  box-shadow: var(--card-box-shadow);
+  border-radius: var(--border-radius-global);
+  backdrop-filter: var(--card-backdrop-filter);
+  padding: var(--stat-card-padding, 1rem);
+}
+
+.stat-card-title {
+  font-size: var(--stat-card-title-font-size, 14px);
+}
+.stat-card-value {
+  font-size: var(--stat-card-value-font-size, 36px);
+}
+.stat-card-icon {
+  width: var(--stat-card-icon-size, 32px);
+  height: var(--stat-card-icon-size, 32px);
+}
+
+.stat-card-bordered .text-gray-300 {
+  color: var(--card-secondary-text);
+  text-shadow: var(--card-text-shadow);
+}
+.stat-card-bordered .text-white {
+  color: var(--card-primary-text);
+  text-shadow: var(--card-text-shadow);
+}
+.stat-card-bordered .text-purple-400 {
+  color: var(--card-icon-color);
+}

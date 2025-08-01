@@ -1,0 +1,43 @@
+
+.bottom-dock-container-bordered {
+  background: var(--dock-background);
+  border: var(--dock-border);
+  box-shadow: var(--dock-box-shadow);
+  color: var(--dock-text);
+  border-radius: var(--border-radius-global);
+  backdrop-filter: var(--dock-backdrop-filter);
+}
+
+.bottom-dock-container-bordered button,
+.bottom-dock-container-bordered .flex svg {
+    color: var(--dock-icon);
+}
+
+.bottom-dock-container-bordered button.bg-purple-500\/50 {
+    background-color: var(--dock-active-button-bg);
+}
+
+
+.minimized-app-btn {
+    position: relative;
+}
+
+.minimized-app-btn::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background-color: #22d3ee; /* cyan-400 */
+    border-radius: 50%;
+    box-shadow: 0 0 6px #22d3ee;
+}
+
+.divider {
+    width: 1px;
+    height: 24px;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin-inline: 0.5rem;
+}

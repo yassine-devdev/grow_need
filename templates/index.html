@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>📊 Database Dashboard</h2>
+<div class="stats">
+    <p><strong>Total Documents:</strong> {{ stats.total_documents }}</p>
+    <p><strong>Collections:</strong> {{ stats.collections|length }}</p>
+    <p><strong>Database Path:</strong> {{ stats.database_path }}</p>
+</div>
+<h3>📁 Collections</h3>
+{% for collection, info in stats.collections.items() %}
+<div class="result-item">
+    <strong>{{ collection }}</strong>: {{ info.count }} documents
+</div>
+{% endfor %}
+{% endblock %}

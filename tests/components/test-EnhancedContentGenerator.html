@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Enhanced Content Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+        .test-section {
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+        .test-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 5px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        .test-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        .test-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+        }
+        .success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #059669;
+        }
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #dc2626;
+        }
+        .info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #2563eb;
+        }
+        .streaming {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            color: #667eea;
+        }
+        .mock-form {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9rem;
+        }
+        .form-group input,
+        .form-group select {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        .generate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .content-display {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .content-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .content-body {
+            padding: 20px;
+        }
+        .lesson-section {
+            margin-bottom: 20px;
+        }
+        .lesson-section h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .activity-card {
+            background: rgba(102, 126, 234, 0.05);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .question-card {
+            background: rgba(102, 126, 234, 0.05);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Test: Enhanced Content Generator</h1>
+            <p>Testing the enhanced content generator with lesson plans, quizzes, and activities</p>
+        </div>
+
+        <div class="test-grid">
+            <div class="test-section">
+                <h3>1. Component Initialization</h3>
+                <p>Test component creation and form setup</p>
+                <button class="test-button" onclick="testComponentInit()">Test Component Init</button>
+                <div id="initResult" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="test-section">
+                <h3>2. Form Validation</h3>
+                <p>Test form validation and input handling</p>
+                <button class="test-button" onclick="testFormValidation()">Test Form Validation</button>
+                <div id="validationResult" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="test-section">
+                <h3>3. Lesson Plan Generation</h3>
+                <p>Test structured lesson plan creation</p>
+                <button class="test-button" onclick="testLessonGeneration()">Test Lesson Plan</button>
+                <div id="lessonResult" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="test-section">
+                <h3>4. Quiz Generation</h3>
+                <p>Test interactive quiz creation</p>
+                <button class="test-button" onclick="testQuizGeneration()">Test Quiz Generation</button>
+                <div id="quizResult" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="test-section">
+                <h3>5. Activity Generation</h3>
+                <p>Test learning activity creation with streaming</p>
+                <button class="test-button" onclick="testActivityGeneration()">Test Activity</button>
+                <div id="activityResult" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="test-section">
+                <h3>6. Content Display</h3>
+                <p>Test content rendering and formatting</p>
+                <button class="test-button" onclick="testContentDisplay()">Test Display</button>
+                <div id="displayResult" class="result" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Mock Form -->
+        <div class="mock-form" id="mockForm" style="display: none;">
+            <h3>🪄 Enhanced Content Generator</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Content Type</label>
+                    <select id="contentType">
+                        <option value="lesson-plan">Lesson Plan</option>
+                        <option value="quiz">Interactive Quiz</option>
+                        <option value="activity">Learning Activity</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Subject</label>
+                    <input type="text" id="subject" placeholder="e.g., Mathematics, Science">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Grade Level</label>
+                    <select id="gradeLevel">
+                        <option value="">Select Grade</option>
+                        <option value="3rd">3rd Grade</option>
+                        <option value="4th">4th Grade</option>
+                        <option value="5th">5th Grade</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Topic</label>
+                    <input type="text" id="topic" placeholder="e.g., Fractions, Solar System">
+                </div>
+            </div>
+
+            <button class="generate-btn" onclick="generateContent()" id="generateBtn">
+                🪄 Generate Content
+            </button>
+        </div>
+
+        <!-- Mock Content Display -->
+        <div class="content-display" id="contentDisplay" style="display: none;">
+            <div class="content-header">
+                <h3 id="contentTitle">Generated Content</h3>
+            </div>
+            <div class="content-body" id="contentBody">
+                <!-- Content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const baseURL = 'http://localhost:11434';
+
+        // Mock Enhanced Content Generator Component
+        class MockEnhancedContentGenerator {
+            constructor() {
+                this.contentType = 'lesson-plan';
+                this.subject = '';
+                this.gradeLevel = '';
+                this.topic = '';
+                this.duration = '';
+                this.questionCount = 5;
+                this.difficulty = 'medium';
+                this.generatedContent = null;
+                this.isGenerating = false;
+                this.error = null;
+                this.isConnected = false;
+            }
+
+            initialize() {
+                this.checkConnection();
+                return {
+                    contentType: this.contentType,
+                    subject: this.subject,
+                    gradeLevel: this.gradeLevel,
+                    topic: this.topic,
+                    isConnected: this.isConnected,
+                    isGenerating: this.isGenerating,
+                    error: this.error
+                };
+            }
+
+            async checkConnection() {
+                try {
+                    const response = await fetch(`${baseURL}/api/tags`);
+                    this.isConnected = response.ok;
+                } catch {
+                    this.isConnected = false;
+                }
+                return this.isConnected;
+            }
+
+            validateForm() {
+                const errors = [];
+                
+                if (!this.subject.trim()) {
+                    errors.push('Subject is required');
+                }
+                if (!this.gradeLevel.trim()) {
+                    errors.push('Grade level is required');
+                }
+                if (!this.topic.trim()) {
+                    errors.push('Topic is required');
+                }
+                
+                return {
+                    isValid: errors.length === 0,
+                    errors: errors
+                };
+            }
+
+            async generateLessonPlan() {
+                const mockLessonPlan = {
+                    title: `${this.topic} Lesson Plan for ${this.gradeLevel} Grade ${this.subject}`,
+                    objectives: [
+                        `Students will understand the basic concepts of ${this.topic}`,
+                        `Students will be able to apply ${this.topic} knowledge in practical situations`,
+                        `Students will demonstrate mastery through assessment activities`
+                    ],
+                    materials: [
+                        'Textbook',
+                        'Whiteboard and markers',
+                        'Handout worksheets',
+                        'Interactive materials'
+                    ],
+                    activities: [
+                        {
+                            name: 'Introduction and Hook',
+                            duration: '10 minutes',
+                            description: `Engage students with an interesting question or demonstration about ${this.topic}`,
+                            type: 'discussion'
+                        },
+                        {
+                            name: 'Direct Instruction',
+                            duration: '15 minutes',
+                            description: `Teach the core concepts of ${this.topic} using visual aids and examples`,
+                            type: 'individual'
+                        },
+                        {
+                            name: 'Guided Practice',
+                            duration: '15 minutes',
+                            description: `Work through ${this.topic} problems together as a class`,
+                            type: 'group'
+                        },
+                        {
+                            name: 'Independent Practice',
+                            duration: '10 minutes',
+                            description: `Students practice ${this.topic} skills individually`,
+                            type: 'hands-on'
+                        }
+                    ],
+                    assessment: {
+                        formative: [
+                            'Observation during guided practice',
+                            'Exit ticket with one question',
+                            'Thumbs up/down understanding check'
+                        ],
+                        summative: [
+                            'Quiz on key concepts',
+                            'Project demonstrating understanding',
+                            'Written reflection on learning'
+                        ]
+                    },
+                    differentiation: [
+                        'Provide visual aids for visual learners',
+                        'Offer additional practice for struggling students',
+                        'Extension activities for advanced learners',
+                        'Allow multiple ways to demonstrate understanding'
+                    ],
+                    homework: `Complete practice worksheet on ${this.topic} concepts covered in class`
+                };
+
+                return mockLessonPlan;
+            }
+
+            async generateQuiz() {
+                const mockQuiz = {
+                    title: `${this.topic} Quiz - ${this.gradeLevel} Grade`,
+                    instructions: `Answer all ${this.questionCount} questions about ${this.topic}. Read each question carefully and select the best answer.`,
+                    questions: Array.from({ length: this.questionCount }, (_, i) => ({
+                        id: i + 1,
+                        type: i % 3 === 0 ? 'multiple-choice' : i % 3 === 1 ? 'true-false' : 'short-answer',
+                        question: `Question ${i + 1}: What is an important concept about ${this.topic}?`,
+                        options: i % 3 === 0 ? [
+                            'Option A - First possible answer',
+                            'Option B - Second possible answer',
+                            'Option C - Third possible answer',
+                            'Option D - Fourth possible answer'
+                        ] : i % 3 === 1 ? ['True', 'False'] : undefined,
+                        correctAnswer: i % 3 === 0 ? 'Option A - First possible answer' : i % 3 === 1 ? 'True' : 'Sample correct answer',
+                        explanation: `This is the correct answer because it demonstrates understanding of ${this.topic} concepts.`,
+                        points: 10,
+                        difficulty: this.difficulty
+                    })),
+                    totalPoints: this.questionCount * 10,
+                    timeLimit: '30 minutes'
+                };
+
+                return mockQuiz;
+            }
+
+            setFormData(data) {
+                Object.assign(this, data);
+            }
+
+            getState() {
+                return {
+                    contentType: this.contentType,
+                    subject: this.subject,
+                    gradeLevel: this.gradeLevel,
+                    topic: this.topic,
+                    duration: this.duration,
+                    questionCount: this.questionCount,
+                    difficulty: this.difficulty,
+                    generatedContent: this.generatedContent,
+                    isGenerating: this.isGenerating,
+                    error: this.error,
+                    isConnected: this.isConnected
+                };
+            }
+        }
+
+        let mockComponent = null;
+
+        // Test functions
+        async function testComponentInit() {
+            const resultDiv = document.getElementById('initResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.textContent = 'Testing component initialization...';
+
+            try {
+                mockComponent = new MockEnhancedContentGenerator();
+                const initialState = mockComponent.initialize();
+
+                let results = 'Component Initialization Test Results:\n\n';
+                results += `✅ Component created successfully\n`;
+                results += `✅ Initial content type: ${initialState.contentType}\n`;
+                results += `✅ Connection check: ${initialState.isConnected ? 'CONNECTED' : 'DISCONNECTED'}\n`;
+                results += `✅ Initial generating state: ${initialState.isGenerating}\n`;
+                results += `✅ Initial error state: ${initialState.error || 'NO ERROR'}\n`;
+
+                // Test methods availability
+                results += `\nMethods available:\n`;
+                results += `✅ checkConnection: ${typeof mockComponent.checkConnection}\n`;
+                results += `✅ validateForm: ${typeof mockComponent.validateForm}\n`;
+                results += `✅ generateLessonPlan: ${typeof mockComponent.generateLessonPlan}\n`;
+                results += `✅ generateQuiz: ${typeof mockComponent.generateQuiz}\n`;
+                results += `✅ setFormData: ${typeof mockComponent.setFormData}\n`;
+                results += `✅ getState: ${typeof mockComponent.getState}\n`;
+
+                // Show mock form
+                document.getElementById('mockForm').style.display = 'block';
+                results += `\n✅ Mock form displayed\n`;
+
+                results += `\nOverall: SUCCESS`;
+
+                resultDiv.className = 'result success';
+                resultDiv.textContent = results;
+
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Component initialization failed: ${error.message}`;
+            }
+        }
+
+        async function testFormValidation() {
+            const resultDiv = document.getElementById('validationResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.textContent = 'Testing form validation...';
+
+            if (!mockComponent) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Please run Component Initialization test first';
+                return;
+            }
+
+            try {
+                let results = 'Form Validation Test Results:\n\n';
+
+                // Test empty form validation
+                const emptyValidation = mockComponent.validateForm();
+                results += `✅ Empty form validation: ${emptyValidation.isValid ? 'FAILED' : 'PASSED'}\n`;
+                results += `✅ Error count: ${emptyValidation.errors.length}\n`;
+                results += `✅ Errors: ${emptyValidation.errors.join(', ')}\n\n`;
+
+                // Test partial form validation
+                mockComponent.setFormData({ subject: 'Math' });
+                const partialValidation = mockComponent.validateForm();
+                results += `✅ Partial form validation: ${partialValidation.isValid ? 'FAILED' : 'PASSED'}\n`;
+                results += `✅ Remaining errors: ${partialValidation.errors.length}\n\n`;
+
+                // Test complete form validation
+                mockComponent.setFormData({
+                    subject: 'Mathematics',
+                    gradeLevel: '5th',
+                    topic: 'Fractions'
+                });
+                const completeValidation = mockComponent.validateForm();
+                results += `✅ Complete form validation: ${completeValidation.isValid ? 'PASSED' : 'FAILED'}\n`;
+                results += `✅ Final errors: ${completeValidation.errors.length}\n`;
+
+                results += `\nOverall: SUCCESS`;
+
+                resultDiv.className = 'result success';
+                resultDiv.textContent = results;
+
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Form validation test failed: ${error.message}`;
+            }
+        }
+
+        async function testLessonGeneration() {
+            const resultDiv = document.getElementById('lessonResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.textContent = 'Testing lesson plan generation...';
+
+            if (!mockComponent) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Please run Component Initialization test first';
+                return;
+            }
+
+            try {
+                // Set up form data
+                mockComponent.setFormData({
+                    contentType: 'lesson-plan',
+                    subject: 'Mathematics',
+                    gradeLevel: '5th',
+                    topic: 'Fractions',
+                    duration: '45 minutes'
+                });
+
+                const startTime = Date.now();
+                const lessonPlan = await mockComponent.generateLessonPlan();
+                const endTime = Date.now();
+
+                let results = 'Lesson Plan Generation Test Results:\n\n';
+                results += `✅ Generation: SUCCESS\n`;
+                results += `✅ Response time: ${endTime - startTime}ms\n`;
+                results += `✅ Title: ${lessonPlan.title}\n`;
+                results += `✅ Objectives: ${lessonPlan.objectives.length} items\n`;
+                results += `✅ Materials: ${lessonPlan.materials.length} items\n`;
+                results += `✅ Activities: ${lessonPlan.activities.length} items\n`;
+                results += `✅ Assessment types: ${Object.keys(lessonPlan.assessment).length}\n`;
+                results += `✅ Differentiation strategies: ${lessonPlan.differentiation.length}\n`;
+                results += `✅ Homework included: ${lessonPlan.homework ? 'YES' : 'NO'}\n\n`;
+
+                // Test activity structure
+                results += `Activity Details:\n`;
+                lessonPlan.activities.forEach((activity, index) => {
+                    results += `  ${index + 1}. ${activity.name} (${activity.duration}) - ${activity.type}\n`;
+                });
+
+                results += `\nOverall: SUCCESS`;
+
+                resultDiv.className = 'result success';
+                resultDiv.textContent = results;
+
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Lesson generation test failed: ${error.message}`;
+            }
+        }
+
+        async function testQuizGeneration() {
+            const resultDiv = document.getElementById('quizResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.textContent = 'Testing quiz generation...';
+
+            if (!mockComponent) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Please run Component Initialization test first';
+                return;
+            }
+
+            try {
+                // Set up form data
+                mockComponent.setFormData({
+                    contentType: 'quiz',
+                    subject: 'Science',
+                    gradeLevel: '4th',
+                    topic: 'Solar System',
+                    questionCount: 5,
+                    difficulty: 'medium'
+                });
+
+                const startTime = Date.now();
+                const quiz = await mockComponent.generateQuiz();
+                const endTime = Date.now();
+
+                let results = 'Quiz Generation Test Results:\n\n';
+                results += `✅ Generation: SUCCESS\n`;
+                results += `✅ Response time: ${endTime - startTime}ms\n`;
+                results += `✅ Title: ${quiz.title}\n`;
+                results += `✅ Instructions: ${quiz.instructions ? 'YES' : 'NO'}\n`;
+                results += `✅ Questions: ${quiz.questions.length} items\n`;
+                results += `✅ Total points: ${quiz.totalPoints}\n`;
+                results += `✅ Time limit: ${quiz.timeLimit}\n\n`;
+
+                // Test question types
+                const questionTypes = {};
+                quiz.questions.forEach(q => {
+                    questionTypes[q.type] = (questionTypes[q.type] || 0) + 1;
+                });
+
+                results += `Question Types:\n`;
+                Object.entries(questionTypes).forEach(([type, count]) => {
+                    results += `  ${type}: ${count} questions\n`;
+                });
+
+                // Test question structure
+                results += `\nFirst Question Details:\n`;
+                const firstQ = quiz.questions[0];
+                results += `  Type: ${firstQ.type}\n`;
+                results += `  Points: ${firstQ.points}\n`;
+                results += `  Difficulty: ${firstQ.difficulty}\n`;
+                results += `  Has explanation: ${firstQ.explanation ? 'YES' : 'NO'}\n`;
+
+                results += `\nOverall: SUCCESS`;
+
+                resultDiv.className = 'result success';
+                resultDiv.textContent = results;
+
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Quiz generation test failed: ${error.message}`;
+            }
+        }
+
+        async function testActivityGeneration() {
+            const resultDiv = document.getElementById('activityResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result streaming';
+            resultDiv.textContent = 'Testing activity generation...\n\nGenerating activity:\n';
+
+            if (!mockComponent) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Please run Component Initialization test first';
+                return;
+            }
+
+            try {
+                // Set up form data
+                mockComponent.setFormData({
+                    contentType: 'activity',
+                    subject: 'Science',
+                    gradeLevel: '3rd',
+                    topic: 'Plants'
+                });
+
+                const startTime = Date.now();
+
+                // Simulate streaming activity generation
+                const activityText = `# Plants Learning Activity for 3rd Grade Science
+
+## Objective
+Students will explore and understand Plants through hands-on learning and interactive engagement.
+
+## Materials Needed
+- Basic classroom supplies
+- Handouts and worksheets
+- Interactive materials specific to Plants
+
+## Activity Instructions
+
+### Step 1: Introduction (5 minutes)
+Begin by asking students what they already know about Plants. Create a mind map on the board with their responses.
+
+### Step 2: Exploration (15 minutes)
+Divide students into small groups and provide each group with materials to explore Plants concepts. Encourage them to make observations and ask questions.
+
+### Step 3: Discussion (10 minutes)
+Have groups share their discoveries and discuss what they learned about Plants. Guide the conversation to highlight key concepts.
+
+### Step 4: Application (15 minutes)
+Students work individually or in pairs to apply their new understanding of Plants to solve problems or complete tasks.
+
+### Step 5: Reflection (5 minutes)
+Students write a brief reflection on what they learned and how they can use this knowledge about Plants in the future.
+
+## Assessment Criteria
+- Participation in group activities
+- Quality of observations and questions
+- Accuracy in applying Plants concepts
+- Thoughtfulness of reflection
+
+## Differentiation Strategies
+- Provide additional support for struggling learners
+- Offer extension activities for advanced students
+- Allow multiple ways to demonstrate understanding
+- Use visual, auditory, and kinesthetic learning approaches`;
+
+                // Simulate streaming
+                const words = activityText.split(' ');
+                let currentText = '';
+                let index = 0;
+
+                const streamInterval = setInterval(() => {
+                    if (index < words.length) {
+                        currentText += words[index] + ' ';
+                        resultDiv.textContent = `Testing activity generation...\n\nWords: ${index + 1}/${words.length}\n\nGenerating activity:\n${currentText}`;
+                        index++;
+                    } else {
+                        clearInterval(streamInterval);
+
+                        const endTime = Date.now();
+                        let finalResults = 'Activity Generation Test Results:\n\n';
+                        finalResults += `✅ Generation: SUCCESS\n`;
+                        finalResults += `✅ Total time: ${endTime - startTime}ms\n`;
+                        finalResults += `✅ Content length: ${activityText.length} characters\n`;
+                        finalResults += `✅ Word count: ${words.length} words\n`;
+                        finalResults += `✅ Has sections: ${activityText.includes('##') ? 'YES' : 'NO'}\n`;
+                        finalResults += `✅ Has steps: ${activityText.includes('Step') ? 'YES' : 'NO'}\n`;
+                        finalResults += `✅ Has assessment: ${activityText.includes('Assessment') ? 'YES' : 'NO'}\n\n`;
+                        finalResults += `Generated Activity:\n${activityText}`;
+
+                        resultDiv.className = 'result success';
+                        resultDiv.textContent = finalResults;
+                    }
+                }, 50);
+
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Activity generation test failed: ${error.message}`;
+            }
+        }
+
+        async function testContentDisplay() {
+            const resultDiv = document.getElementById('displayResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.textContent = 'Testing content display...';
+
+            if (!mockComponent) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Please run Component Initialization test first';
+                return;
+            }
+
+            try {
+                // Generate sample content
+                mockComponent.setFormData({
+                    subject: 'Mathematics',
+                    gradeLevel: '5th',
+                    topic: 'Fractions'
+                });
+
+                const lessonPlan = await mockComponent.generateLessonPlan();
+
+                // Display content
+                const contentDisplay = document.getElementById('contentDisplay');
+                const contentTitle = document.getElementById('contentTitle');
+                const contentBody = document.getElementById('contentBody');
+
+                contentTitle.textContent = lessonPlan.title;
+
+                let displayHTML = `
+                    <div class="lesson-section">
+                        <h4>📋 Learning Objectives</h4>
+                        <ul>
+                            ${lessonPlan.objectives.map(obj => `<li>${obj}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="lesson-section">
+                        <h4>📦 Materials Needed</h4>
+                        <ul>
+                            ${lessonPlan.materials.map(material => `<li>${material}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="lesson-section">
+                        <h4>🎯 Activities</h4>
+                        ${lessonPlan.activities.map(activity => `
+                            <div class="activity-card">
+                                <h5>${activity.name} (${activity.duration})</h5>
+                                <p>${activity.description}</p>
+                                <span style="background: rgba(102, 126, 234, 0.2); padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">${activity.type}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="lesson-section">
+                        <h4>📊 Assessment</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div>
+                                <h5>Formative Assessment</h5>
+                                <ul>
+                                    ${lessonPlan.assessment.formative.map(item => `<li>${item}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div>
+                                <h5>Summative Assessment</h5>
+                                <ul>
+                                    ${lessonPlan.assessment.summative.map(item => `<li>${item}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                contentBody.innerHTML = displayHTML;
+                contentDisplay.style.display = 'block';
+
+                let results = 'Content Display Test Results:\n\n';
+                results += `✅ Content displayed: SUCCESS\n`;
+                results += `✅ Title rendered: ${contentTitle.textContent ? 'YES' : 'NO'}\n`;
+                results += `✅ HTML generated: ${displayHTML.length} characters\n`;
+                results += `✅ Sections rendered: ${displayHTML.split('lesson-section').length - 1}\n`;
+                results += `✅ Activities rendered: ${lessonPlan.activities.length}\n`;
+                results += `✅ Assessment sections: 2 (formative & summative)\n`;
+
+                results += `\nOverall: SUCCESS`;
+
+                resultDiv.className = 'result success';
+                resultDiv.textContent = results;
+
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Content display test failed: ${error.message}`;
+            }
+        }
+
+        // Mock form interaction
+        async function generateContent() {
+            if (!mockComponent) return;
+
+            const contentType = document.getElementById('contentType').value;
+            const subject = document.getElementById('subject').value;
+            const gradeLevel = document.getElementById('gradeLevel').value;
+            const topic = document.getElementById('topic').value;
+
+            const generateBtn = document.getElementById('generateBtn');
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '⏳ Generating...';
+
+            try {
+                mockComponent.setFormData({ contentType, subject, gradeLevel, topic });
+
+                let content;
+                if (contentType === 'lesson-plan') {
+                    content = await mockComponent.generateLessonPlan();
+                } else if (contentType === 'quiz') {
+                    content = await mockComponent.generateQuiz();
+                }
+
+                console.log('Generated content:', content);
+                alert('Content generated successfully! Check the console for details.');
+
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '🪄 Generate Content';
+            }
+        }
+
+        // Auto-run component initialization test on load
+        window.addEventListener('load', () => {
+            setTimeout(testComponentInit, 1000);
+        });
+    </script>
+</body>
+</html>

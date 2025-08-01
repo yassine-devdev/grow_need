@@ -1,0 +1,129 @@
+.video-editor-layout {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #0f172a; /* slate-900 */
+    color: #e2e8f0; /* slate-200 */
+    font-family: 'Inter', sans-serif;
+}
+
+/* --- Top Bar --- */
+.ve-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background-color: #1e293b; /* slate-800 */
+    border-bottom: 1px solid #334155; /* slate-700 */
+    flex-shrink: 0;
+    z-index: 20;
+}
+.ve-top-bar-left, .ve-top-bar-center, .ve-top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.ve-project-name { font-weight: 600; font-size: 1.125rem; }
+.ve-top-bar-btn { color: #94a3b8; padding: 0.5rem; border-radius: 999px; transition: all 0.2s; }
+.ve-top-bar-btn:hover:not(:disabled) { background-color: rgba(255,255,255,0.1); color: white; }
+.ve-top-bar-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.ve-export-btn { background-color: #4f46e5; color: white; font-weight: 600; padding: 0.5rem 1.25rem; border-radius: 0.5rem; transition: background-color 0.2s; }
+.ve-export-btn:hover { background-color: #4338ca; }
+
+
+/* --- Main Content --- */
+.video-editor-main-content {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: 320px 1fr 320px;
+    overflow: hidden;
+}
+
+/* --- Left Sidebar --- */
+.ve-left-sidebar { background-color: #1e293b; display: flex; border-right: 1px solid #334155; }
+.ve-icon-tabs { width: 80px; flex-shrink: 0; background-color: #0f172a; padding: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem; align-items: center; overflow-y: auto; }
+.ve-icon-tab-btn { width: 100%; padding: 0.75rem 0; border-radius: 0.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; color: #94a3b8; transition: all 0.2s; }
+.ve-icon-tab-btn span { font-size: 0.7rem; }
+.ve-icon-tab-btn:hover { background-color: rgba(255,255,255,0.1); color: white; }
+.ve-icon-tab-btn.active { background-color: #4f46e5; color: white; }
+
+.ve-left-panel { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+.ve-panel-content { padding: 1rem; overflow-y: auto; flex-grow: 1; }
+.ve-search-bar { width: 100%; background-color: #334155; border: 1px solid transparent; border-radius: 0.375rem; padding: 0.5rem; color: white; margin-bottom: 1rem; transition: border-color 0.2s; }
+.ve-search-bar:focus { outline: none; border-color: #4f46e5; }
+.ve-panel-title { font-weight: 600; margin-bottom: 1rem; color: #94a3b8; }
+
+.ve-media-grid, .ve-elements-grid { display: flex; flex-direction: column; gap: 0.75rem; }
+.ve-media-item, .ve-element-item { display: flex; align-items: center; gap: 0.75rem; background-color: #334155; border-radius: 0.375rem; padding: 0.5rem; cursor: pointer; transition: background-color 0.2s; }
+.ve-media-item:hover, .ve-element-item:hover { background-color: #475569; }
+.ve-media-thumbnail { width: 80px; height: 45px; object-fit: cover; border-radius: 0.25rem; flex-shrink: 0; background-color: #475569;}
+.ve-element-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background-color: #475569; border-radius: 0.25rem; flex-shrink: 0; }
+.ve-media-info { overflow: hidden; }
+.ve-media-title { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ve-media-duration { font-size: 0.8rem; color: #94a3b8; }
+
+
+/* --- Preview Area --- */
+.ve-preview-area { background-color: #020617; display: flex; flex-direction: column; padding: 1rem; gap: 1rem; }
+.ve-preview-window { flex-grow: 1; background-color: black; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 0.5rem; position: relative; }
+.ve-preview-window img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.ve-preview-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.ve-preview-toolbar .ve-top-bar-btn { background-color: rgba(255,255,255,0.1); }
+.ve-preview-toolbar .ve-top-bar-btn.active { background-color: #4f46e5; color: white; }
+
+/* --- Right Sidebar --- */
+.ve-right-sidebar { background-color: #1e293b; display: flex; flex-direction: column; border-left: 1px solid #334155; overflow: hidden; }
+.ve-right-sidebar-header { padding: 1rem; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+.ve-right-sidebar-header h3 { font-weight: 600; }
+.ve-right-panel-content { flex-grow: 1; overflow-y: auto; }
+
+.ve-properties-content { padding: 1rem; display: flex; flex-direction: column; gap: 1.5rem; }
+.ve-property-group h4 { font-weight: 600; color: #94a3b8; margin-bottom: 0.75rem; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em; }
+.ve-prop-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.ve-prop-row label { display: flex; align-items: center; gap: 0.5rem; color: #cbd5e1; font-size: 0.875rem;}
+.ve-prop-input { background-color: #334155; border: none; border-radius: 0.25rem; color: white; padding: 0.25rem 0.5rem; width: 60px; text-align: right; }
+.ve-prop-slider { flex-grow: 1; }
+
+/* --- Timeline Area --- */
+.ve-timeline-area { height: 250px; flex-shrink: 0; background-color: #1e293b; border-top: 1px solid #334155; display: flex; flex-direction: column; }
+.ve-timeline-controls { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1rem; background-color: #0f172a; }
+.ve-timeline-controls-left, .ve-timeline-controls-center, .ve-timeline-controls-right { display: flex; align-items: center; gap: 0.75rem; }
+.ve-timeline-controls-center .play-btn { background-color: #4f46e5; color: white; padding: 0.5rem; border-radius: 50%; }
+.ve-timeline-timecode { font-family: 'Roboto Mono', monospace; min-width: 180px; text-align: center; }
+
+.ve-timeline-main { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+.ve-timeline-header { flex-shrink: 0; display: flex; }
+.ve-timeline-header-left { width: 70px; flex-shrink: 0; border-right: 1px solid #334155; padding: 0.25rem; display: flex; align-items: center;}
+.ve-add-track-btn { color: #94a3b8; }
+.ve-timeline-header-right { flex-grow: 1; overflow: hidden; position: relative; }
+
+.ve-tracks-container { flex-grow: 1; overflow-x: auto; overflow-y: scroll; position: relative; }
+.ve-timeline-content { position: relative; }
+.ve-ruler-container { height: 24px; cursor: pointer; position: sticky; top: 0; z-index: 15; background-color: #0f172a; }
+.ve-timeline-ruler { display: flex; }
+.ve-ruler-marker { flex-shrink: 0; text-align: left; font-size: 0.7rem; color: #94a3b8; border-left: 1px solid #475569; padding-left: 4px; box-sizing: border-box; }
+
+.ve-timeline-track { position: relative; height: 50px; border-top: 1px solid #334155; }
+.ve-track-header { position: absolute; left: 0; top: -1px; width: 70px; height: calc(100% + 1px); display: flex; align-items: center; justify-content: center; background-color: #1e293b; border-right: 1px solid #334155; z-index: 12; }
+.ve-track-clips { position: absolute; height: 100%; left: 70px; right: 0; }
+
+.ve-timeline-clip { position: absolute; top: 10%; height: 80%; background-color: #4f46e5; border: 1px solid #818cf8; border-radius: 0.25rem; display: flex; align-items: center; overflow: hidden; cursor: grab; user-select: none; }
+.ve-timeline-clip.is-dragging { z-index: 7; opacity: 0.7; cursor: grabbing; }
+.ve-timeline-clip.selected { border-width: 2px; border-color: white; box-shadow: 0 0 10px rgba(255,255,255,0.5); z-index: 5; }
+.ve-clip-thumbnail { height: 100%; object-fit: cover; opacity: 0.5; pointer-events: none; }
+.ve-clip-title { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; font-weight: 500; color: white; pointer-events: none; white-space: nowrap; }
+
+.ve-timeline-clip.type-text { background-color: #16a34a; border-color: #4ade80; }
+.ve-timeline-clip.type-shape { background-color: #ca8a04; border-color: #facc15; }
+
+.ve-clip-handle { position: absolute; top: 0; bottom: 0; width: 10px; display: flex; align-items: center; justify-content: center; cursor: ew-resize; z-index: 6; color: white; opacity: 0; }
+.ve-timeline-clip:hover .ve-clip-handle, .ve-timeline-clip.selected .ve-clip-handle { opacity: 1; }
+.ve-clip-handle.left { left: 0; }
+.ve-clip-handle.right { right: 0; }
+.ve-clip-handle svg { filter: drop-shadow(0 0 2px black); }
+
+
+.ve-playhead { position: absolute; top: 0; bottom: 0; width: 2px; background-color: white; z-index: 10; cursor: ew-resize; pointer-events: all; }
+.ve-playhead-handle { position: absolute; top: 0; left: -6px; width: 14px; height: 14px; background-color: white; border-radius: 50%; pointer-events: all; }

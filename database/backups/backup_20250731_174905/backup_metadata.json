@@ -1,0 +1,59 @@
+{
+  "backup_name": "backup_20250731_174905",
+  "created_at": "2025-07-31T17:49:05.214767",
+  "original_path": "./chroma_db",
+  "collections": [
+    "educational_content",
+    "lesson_plans",
+    "student_work",
+    "assessments",
+    "parent_communications"
+  ],
+  "stats": {
+    "educational_content": {
+      "name": "educational_content",
+      "document_count": 1,
+      "metadata": {
+        "created_at": "2025-07-31T17:48:59.518377",
+        "description": "Educational materials and resources"
+      },
+      "created_at": "2025-07-31T17:48:59.518377"
+    },
+    "lesson_plans": {
+      "name": "lesson_plans",
+      "document_count": 0,
+      "metadata": {
+        "description": "Teacher lesson plans and curricula",
+        "created_at": "2025-07-31T17:48:59.556758"
+      },
+      "created_at": "2025-07-31T17:48:59.556758"
+    },
+    "student_work": {
+      "name": "student_work",
+      "document_count": 0,
+      "metadata": {
+        "description": "Student assignments and projects",
+        "created_at": "2025-07-31T17:48:59.595682"
+      },
+      "created_at": "2025-07-31T17:48:59.595682"
+    },
+    "assessments": {
+      "name": "assessments",
+      "document_count": 0,
+      "metadata": {
+        "created_at": "2025-07-31T17:48:59.636747",
+        "description": "Quizzes, tests, and rubrics"
+      },
+      "created_at": "2025-07-31T17:48:59.636747"
+    },
+    "parent_communications": {
+      "name": "parent_communications",
+      "document_count": 0,
+      "metadata": {
+        "description": "Parent-teacher communications",
+        "created_at": "2025-07-31T17:48:59.681060"
+      },
+      "created_at": "2025-07-31T17:48:59.681060"
+    }
+  }
+}
