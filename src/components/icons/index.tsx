@@ -94,12 +94,10 @@ const crmIcons = {
   Download: L.Download,
   GraduationCap: L.GraduationCap,
   CreditCard: L.CreditCard,
-  MessageSquare: L.MessageSquare,
   BookCopy: L.BookCopy,
   Bot: L.Bot,
   Activity: L.Activity,
   Users: L.Users,
-  FileText: L.FileText,
 };
 
 export const Icons = {
