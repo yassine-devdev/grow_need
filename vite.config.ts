@@ -2,8 +2,78 @@ import path from 'path';
 import { defineConfig, loadEnv } from 'vite';
 import { visualizer } from 'rollup-plugin-visualizer';
 
+// Environment validation and configuration
+function validateAndSetupEnvironment(env: Record<string, string>, mode: string) {
+  // Define required environment variables per mode
+  const requiredVars = {
+    development: [],
+    production: ['AI_PROVIDER'],
+    test: []
+  };
+
+  // Define fallback values
+  const fallbacks = {
+    AI_PROVIDER: 'ollama',
+    OLLAMA_BASE_URL: 'http://localhost:11434',
+    OLLAMA_MODEL: 'qwen2.5:3b-instruct',
+    VECTOR_DB_URL: 'http://localhost:5000',
+    ENABLE_ENHANCED_AI: 'true',
+    ENABLE_RAG: 'true',
+    NODE_ENV: mode
+  };
+
+  // Helper function to get environment variable with fallback
+  const getEnvWithFallback = (key: string) => {
+    return env[key] || fallbacks[key as keyof typeof fallbacks] || '';
+  };
+
+  // Validate required variables
+  const missing = requiredVars[mode as keyof typeof requiredVars]?.filter(
+    varName => !env[varName] && !fallbacks[varName as keyof typeof fallbacks]
+  ) || [];
+
+  if (missing.length > 0) {
+    console.warn(`⚠️  Missing required environment variables for ${mode}:`, missing);
+  }
+
+  // Validate AI provider configuration
+  const aiProvider = getEnvWithFallback('AI_PROVIDER');
+  const warnings: string[] = [];
+
+  if (aiProvider === 'gemini' && !env.GEMINI_API_KEY && !env.API_KEY) {
+    warnings.push('GEMINI_API_KEY is not set. AI features may not work properly.');
+  }
+  if (aiProvider === 'openai' && !env.OPENAI_API_KEY) {
+    warnings.push('OPENAI_API_KEY is not set. AI features may not work properly.');
+  }
+
+  // Log warnings
+  if (warnings.length > 0) {
+    console.warn('⚠️  Environment warnings:');
+    warnings.forEach(warning => console.warn(`   - ${warning}`));
+  }
+
+  // Log configuration
+  console.log('🔧 Environment Configuration:');
+  console.log(`   Mode: ${mode}`);
+  console.log(`   AI Provider: ${aiProvider}`);
+  console.log(`   Vector DB URL: ${getEnvWithFallback('VECTOR_DB_URL')}`);
+  console.log(`   Enhanced AI: ${getEnvWithFallback('ENABLE_ENHANCED_AI')}`);
+  console.log(`   RAG Enabled: ${getEnvWithFallback('ENABLE_RAG')}`);
+
+  // Return processed environment variables with fallbacks
+  return {
+    ...env,
+    ...Object.fromEntries(
+      Object.entries(fallbacks).map(([key, value]) => [key, getEnvWithFallback(key)])
+    )
+  };
+}
+
 export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, '.', '');
+    const rawEnv = loadEnv(mode, '.', '');
+    const env = validateAndSetupEnvironment(rawEnv, mode);
+    
     return {
       // Plugins for bundle analysis
       plugins: [
@@ -196,15 +266,34 @@ export default defineConfig(({ mode }) => {
       },
 
       define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+        // Core environment
+        'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV || mode),
+        
+        // AI Provider Configuration with graceful fallbacks
+        'process.env.AI_PROVIDER': JSON.stringify(env.AI_PROVIDER || 'ollama'),
+        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY || env.API_KEY || ''),
+        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY || env.API_KEY || ''),
         'process.env.OLLAMA_BASE_URL': JSON.stringify(env.OLLAMA_BASE_URL || 'http://localhost:11434'),
         'process.env.OLLAMA_MODEL': JSON.stringify(env.OLLAMA_MODEL || 'qwen2.5:3b-instruct'),
-        'process.env.AI_PROVIDER': JSON.stringify(env.AI_PROVIDER || 'ollama'),
-        // Enhanced AI environment variables
+        
+        // Vector Database Configuration
         'process.env.VECTOR_DB_URL': JSON.stringify(env.VECTOR_DB_URL || 'http://localhost:5000'),
+        
+        // Feature Flags with safe defaults
         'process.env.ENABLE_ENHANCED_AI': JSON.stringify(env.ENABLE_ENHANCED_AI || 'true'),
-        'process.env.ENABLE_RAG': JSON.stringify(env.ENABLE_RAG || 'true')
+        'process.env.ENABLE_RAG': JSON.stringify(env.ENABLE_RAG || 'true'),
+        'process.env.ENABLE_VECTOR_SEARCH': JSON.stringify(env.ENABLE_VECTOR_SEARCH || 'true'),
+        'process.env.ENABLE_STREAMING': JSON.stringify(env.ENABLE_STREAMING || 'true'),
+        
+        // Frontend-specific variables (VITE_ prefixed)
+        'process.env.VITE_API_BASE_URL': JSON.stringify(env.VITE_API_BASE_URL || 'http://localhost:5000'),
+        'process.env.VITE_OLLAMA_BASE_URL': JSON.stringify(env.VITE_OLLAMA_BASE_URL || 'http://localhost:11434'),
+        'process.env.VITE_VECTOR_DB_URL': JSON.stringify(env.VITE_VECTOR_DB_URL || 'http://localhost:5000'),
+        'process.env.VITE_OPENAI_API_KEY': JSON.stringify(env.VITE_OPENAI_API_KEY || ''),
+        'process.env.VITE_APP_ENV': JSON.stringify(env.VITE_APP_ENV || mode),
+        'process.env.VITE_DEBUG': JSON.stringify(env.VITE_DEBUG || (mode === 'development' ? 'true' : 'false')),
+        'process.env.VITE_ENABLE_ENHANCED_AI': JSON.stringify(env.VITE_ENABLE_ENHANCED_AI || 'true'),
+        'process.env.VITE_ENABLE_RAG': JSON.stringify(env.VITE_ENABLE_RAG || 'true'),
       },
       resolve: {
         alias: {

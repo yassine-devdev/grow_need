@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">10% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/60</span>
+                <span class='fraction'>0/60</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.53% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/26</span>
+                <span class='fraction'>0/26</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">4.16% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/24</span>
+                <span class='fraction'>0/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">10% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/60</span>
+                <span class='fraction'>0/60</span>
             </div>
         
             
@@ -289,7 +289,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -488,10 +488,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -500,17 +500,17 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * AI Provider Factory
  * Provides a unified interface that can switch between Ollama and Google Gemini
  */
 &nbsp;
-import { ollamaService } from './ollamaService';
+<span class="cstat-no" title="statement not covered" >import { ollamaService } from './ollamaService';</span>
 &nbsp;
 export interface AIResponse {
   text: string;
@@ -709,10 +709,10 @@ class GeminiProvider implements AIProvider {
 }
 &nbsp;
 // Factory function to create the appropriate AI provider
-export function createAIProvider(): AIProvider {
-  const provider = process.env.AI_PROVIDER || 'ollama';
+<span class="cstat-no" title="statement not covered" >export function <span class="fstat-no" title="function not covered" >c</span>reateAIProvider(</span>): AIProvider {
+  const provider = <span class="cstat-no" title="statement not covered" >process.env.AI_PROVIDER || 'ollama';</span>
   
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (provider === 'gemini') {
+<span class="cstat-no" title="statement not covered" >  if (provider === 'gemini') {</span>
     const apiKey = <span class="cstat-no" title="statement not covered" >process.env.GEMINI_API_KEY || process.env.API_KEY;</span>
 <span class="cstat-no" title="statement not covered" >    if (!apiKey) {</span>
 <span class="cstat-no" title="statement not covered" >      console.warn('Gemini API key not found, falling back to Ollama');</span>
@@ -721,11 +721,11 @@ export function createAIProvider(): AIProvider {
 <span class="cstat-no" title="statement not covered" >    return new GeminiProvider(apiKey);</span>
   }
   
-  return new OllamaProvider();
+<span class="cstat-no" title="statement not covered" >  return new OllamaProvider();</span>
 }
 &nbsp;
 // Export singleton instance
-export const aiProvider = createAIProvider();
+export const <span class="cstat-no" title="statement not covered" >aiProvider = createAIProvider();</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -733,7 +733,7 @@ export const aiProvider = createAIProvider();
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-08-01T11:06:38.051Z
+                at 2025-08-01T21:13:41.840Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
