@@ -56,8 +56,10 @@ class SecureAIService {
   private baseUrl: string;
 
   constructor() {
-    // Use backend API URL
-    this.baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+    // Use backend API URL - handle test environment
+    this.baseUrl = (typeof import !== 'undefined' && import.meta?.env?.VITE_API_BASE_URL) || 
+                   process.env.VITE_API_BASE_URL || 
+                   'http://localhost:5000';
     
     // Configure API interceptor with backend URL
     apiInterceptor.setBaseUrl(this.baseUrl);
