@@ -4,11 +4,10 @@ import { Toolbar } from './design/Toolbar';
 import { Canvas } from './design/Canvas';
 import { useHistory } from './design/useHistory';
 import { DesignState, Page, CanvasElement, Project } from './design/types';
+import { fabric } from 'fabric';
 import { getBoundingBox, reorderArray } from './design/utils';
 import { v4 as uuidv4 } from 'uuid';
 import './DesignStudio.css';
-
-declare const html2canvas: any;
 
 const LOCAL_STORAGE_KEY = 'design_studio_projects';
 
@@ -32,7 +31,8 @@ initialDesignState.activePageId = initialDesignState.pages[0].id;
 const DesignStudio: React.FC = () => {
   const [designState, setDesignState, history] = useHistory<DesignState>(initialDesignState);
   const [projects, setProjects] = useState<Project[]>([]);
-  const canvasContainerRef = useRef<HTMLDivElement>(null);
+  const [isDrawingModeActive, setIsDrawingModeActive] = useState(false);
+  const fabricCanvasRef = useRef<fabric.Canvas>(null);
 
   useEffect(() => {
     try {
@@ -71,18 +71,16 @@ const DesignStudio: React.FC = () => {
       }
   }, []);
 
-  const exportAsPNG = useCallback(async () => {
-    if (canvasContainerRef.current) {
-        const canvasToRender = canvasContainerRef.current.querySelector('.design-canvas-render-area');
-        if (canvasToRender) {
-            try {
-                const canvas = await html2canvas(canvasToRender as HTMLElement, { backgroundColor: null, scale: 2 });
-                const link = document.createElement('a');
-                link.download = 'design.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            } catch (error) { console.error("Error exporting canvas:", error); }
-        }
+  const exportAsPNG = useCallback(() => {
+    if (fabricCanvasRef.current) {
+      const dataURL = fabricCanvasRef.current.toDataURL({
+        format: 'png',
+        quality: 1,
+      });
+      const link = document.createElement('a');
+      link.download = 'design.png';
+      link.href = dataURL;
+      link.click();
     }
   }, []);
 
@@ -225,11 +223,15 @@ const DesignStudio: React.FC = () => {
           alignElements={alignElements}
           moveLayer={moveLayer}
           deleteSelectedElements={deleteSelectedElements}
+          isDrawingModeActive={isDrawingModeActive}
+          setIsDrawingModeActive={setIsDrawingModeActive}
         />
         <Canvas
+          ref={fabricCanvasRef}
           designState={designState}
           setDesignState={setDesignState}
-          canvasContainerRef={canvasContainerRef}
+          isDrawingModeActive={isDrawingModeActive}
+          addElement={addElement}
         />
       </div>
     </div>

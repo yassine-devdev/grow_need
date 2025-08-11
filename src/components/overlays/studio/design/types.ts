@@ -1,5 +1,5 @@
 export type CanvasElementType = 'shape' | 'text' | 'image';
-export type ShapeType = 'rect' | 'circle' | 'triangle' | 'star';
+export type ShapeType = 'rect' | 'circle' | 'triangle' | 'star' | 'path';
 export type TextAlign = 'left' | 'center' | 'right';
 
 export interface CanvasElement {
@@ -33,6 +33,7 @@ export interface CanvasElement {
   
   // Image properties
   src?: string;
+  filters?: string[];
 }
 
 export interface Page {

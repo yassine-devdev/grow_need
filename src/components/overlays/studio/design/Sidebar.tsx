@@ -8,7 +8,8 @@ import {
     UploadsPanel,
     ProjectsPanel,
     LayersPanel,
-    PagesPanel
+    PagesPanel,
+    PropertiesPanel
 } from './sidebar-panels';
 
 interface SidebarProps {
@@ -29,7 +30,7 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = (props) => {
   const { addElement, projects, loadProject, deleteProject, designState, setDesignState, addPage, selectPage, duplicatePage, deletePage, updateElement, reorderElement, duplicateElement } = props;
-  const [activePanel, setActivePanel] = useState('layers');
+  const [activePanel, setActivePanel] = useState('properties');
 
   const handleAddElement = useCallback((options: { type: CanvasElementType } & Partial<Omit<CanvasElement, 'id' | 'zIndex'>>) => {
     addElement({
@@ -43,6 +44,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
   }, [addElement]);
 
   const sidebarItems = [
+    { id: 'properties', name: 'Properties', icon: Icons.Settings },
     { id: 'layers', name: 'Layers', icon: Icons.Layers },
     { id: 'pages', name: 'Pages', icon: Icons.FilePlus2 },
     { id: 'templates', name: 'Templates', icon: Icons.LayoutTemplate },
@@ -54,6 +56,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
 
   const renderPanel = () => {
     switch (activePanel) {
+      case 'properties': return <PropertiesPanel designState={designState} updateElement={updateElement} />;
       case 'layers': return <LayersPanel designState={designState} setDesignState={setDesignState} updateElement={updateElement} reorderElement={reorderElement} duplicateElement={duplicateElement} />;
       case 'pages': return <PagesPanel designState={designState} addPage={addPage} selectPage={selectPage} duplicatePage={duplicatePage} deletePage={deletePage} />;
       case 'templates': return <TemplatesPanel />;

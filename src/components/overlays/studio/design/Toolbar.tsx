@@ -16,13 +16,16 @@ interface ToolbarProps {
   alignElements: (align: 'left' | 'center' | 'right' | 'top' | 'middle' | 'bottom') => void;
   moveLayer: (direction: 'forward' | 'backward' | 'front' | 'back') => void;
   deleteSelectedElements: () => void;
+  isDrawingModeActive: boolean;
+  setIsDrawingModeActive: (isActive: boolean) => void;
 }
 
 export const Toolbar: React.FC<ToolbarProps> = ({
   designState, setDesignState,
   undo, redo, canUndo, canRedo, saveProject, exportAsPNG,
   groupElements, ungroupElements, alignElements,
-  moveLayer, deleteSelectedElements
+  moveLayer, deleteSelectedElements,
+  isDrawingModeActive, setIsDrawingModeActive
 }) => {
   const { pages, activePageId, selectedElementIds } = designState;
   const activePage = pages.find(p => p.id === activePageId)!;
@@ -47,6 +50,16 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         <div className="toolbar-group">
             <button className="toolbar-btn" onClick={undo} disabled={!canUndo} title="Undo"><Icons.Undo size={18} /></button>
             <button className="toolbar-btn" onClick={redo} disabled={!canRedo} title="Redo"><Icons.Redo size={18} /></button>
+        </div>
+        <div className="toolbar-divider"></div>
+        <div className="toolbar-group">
+            <button
+                className={`toolbar-btn ${isDrawingModeActive ? 'active' : ''}`}
+                onClick={() => setIsDrawingModeActive(!isDrawingModeActive)}
+                title="Pen Tool"
+            >
+                <Icons.PenSquare size={18} />
+            </button>
         </div>
         <div className="toolbar-divider"></div>
         
