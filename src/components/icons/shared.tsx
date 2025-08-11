@@ -230,4 +230,13 @@ export const sharedIcons = {
   Package: L.Package,
   MinusCircle: L.MinusCircle,
   Radius: L.Radius,
+  
+  // Assessment Builder specific icons
+  ToggleLeft: L.Check, // Use Check as a replacement for ToggleLeft
+  Edit3: L.Edit, // Use Edit as a replacement for Edit3
+  Link: L.ArrowRight, // Use ArrowRight as a replacement for Link
+  Wrench: L.Settings, // Use Settings as a replacement for Wrench
+  Info: L.AlertCircle, // Use AlertCircle as a replacement for Info
+  Trash: L.Trash2, // Use Trash2 as a replacement for Trash
+  Layout: L.LayoutTemplate, // Use LayoutTemplate as a replacement for Layout
 };
