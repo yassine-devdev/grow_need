@@ -41,8 +41,8 @@ Welcome to the complete technical documentation for the **GROW YouR NEED Saas Sc
 6.  **[AI Integration with Google Gemini](./AI_INTEGRATION.md)**
     -   A comprehensive list and explanation of all features powered by the Google Gemini API.
     
-7.  **[Backend Integration](./backend/README.md)**
-    -   A step-by-step guide to setting up a backend using Firebase.
+7.  **[Backend & AI Setup](../database/README.md)**
+    -   Instructions for setting up the local Python backend, vector database, and Ollama AI services.
 
 8.  **[Theming & Design System](./THEMING.md)**
     -   Details on how the application's appearance (colors, sizing, spacing) can be customized through the System Settings module.
