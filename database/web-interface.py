@@ -14,6 +14,8 @@ from flask import Flask, render_template, request, redirect, flash, jsonify
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import importlib.util
+import requests
+import json
 
 # Import mock data
 from mock_data import (
@@ -23,6 +25,15 @@ from mock_data import (
     generate_enrollment_data,
     generate_parent_portal_data,
     generate_dashboard_data
+)
+
+# Import security utilities
+from security_utils import (
+    InputValidator, 
+    RateLimiter, 
+    require_rate_limit, 
+    validate_json_input,
+    log_security_event
 )
 
 # Add current directory to path
@@ -44,10 +55,14 @@ spec2.loader.exec_module(fp)
 
 # Initialize Flask app
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-change-this'
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your-secret-key-change-this-in-production')
 
-# Enable CORS for all routes
-CORS(app, origins=['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'])
+# Enable CORS for all routes with stricter configuration
+CORS(app, 
+     origins=['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'],
+     methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+     allow_headers=['Content-Type', 'Authorization', 'X-Requested-With'],
+     supports_credentials=False)
 
 # Add health check endpoint
 @app.route('/api/health')
@@ -580,6 +595,229 @@ def api_delete_collection(collection_name):
             return jsonify({'success': False, 'error': result['error']}), 400
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
+# =============================================================================
+# SECURE AI PROXY ENDPOINTS
+# =============================================================================
+
+class AIServiceProxy:
+    """Secure proxy for AI service calls"""
+    
+    def __init__(self):
+        self.ollama_base_url = os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434')
+        self.gemini_api_key = os.getenv('GEMINI_API_KEY')
+        self.default_model = os.getenv('OLLAMA_MODEL', 'qwen2.5:3b-instruct')
+        
+    def test_ollama_connection(self) -> bool:
+        """Test Ollama service connection"""
+        try:
+            response = requests.get(f"{self.ollama_base_url}/api/tags", timeout=5)
+            return response.status_code == 200
+        except Exception as e:
+            logger.error(f"Ollama connection test failed: {e}")
+            return False
+    
+    def call_ollama_generate(self, prompt: str, options: Dict[str, Any] = None) -> Dict[str, Any]:
+        """Securely call Ollama generate endpoint"""
+        if options is None:
+            options = {}
+            
+        try:
+            messages = []
+            
+            # Add system message if provided
+            if options.get('system'):
+                messages.append({
+                    'role': 'system',
+                    'content': options['system']
+                })
+            
+            # Add user prompt
+            messages.append({
+                'role': 'user',
+                'content': prompt
+            })
+            
+            payload = {
+                'model': options.get('model', self.default_model),
+                'messages': messages,
+                'stream': False,
+                'options': {
+                    'temperature': options.get('temperature', 0.7),
+                    'num_predict': options.get('max_tokens', 2048)
+                }
+            }
+            
+            response = requests.post(
+                f"{self.ollama_base_url}/api/chat",
+                json=payload,
+                timeout=60
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                return {
+                    'success': True,
+                    'text': data.get('message', {}).get('content', ''),
+                    'model': data.get('model', self.default_model)
+                }
+            else:
+                return {
+                    'success': False,
+                    'error': f"Ollama API error: {response.status_code}"
+                }
+                
+        except Exception as e:
+            logger.error(f"Ollama API call failed: {e}")
+            return {
+                'success': False,
+                'error': f"Service error: {str(e)}"
+            }
+
+# Initialize AI service proxy
+ai_proxy = AIServiceProxy()
+
+@app.route('/api/ai/generate', methods=['POST'])
+@require_rate_limit('ai_generate')
+@validate_json_input(InputValidator.validate_educational_content_request)
+def ai_generate_content(validated_data):
+    """Secure AI content generation endpoint"""
+    try:
+        log_security_event('ai_generate_request', {
+            'content_type': validated_data.get('content_type'),
+            'prompt_length': len(validated_data.get('prompt', ''))
+        })
+        
+        # Extract validated parameters
+        prompt = validated_data['prompt']
+        content_type = validated_data['content_type']
+        
+        # Build enhanced prompt based on content type
+        system_prompts = {
+            'lesson-plan': "You are an experienced educator creating comprehensive lesson plans. Focus on clear learning objectives, engaging activities, and appropriate assessments.",
+            'quiz': "You are an educational assessment specialist creating fair and comprehensive quizzes. Include clear questions and explanations.",
+            'assessment': "You are an expert in educational assessment. Create detailed rubrics and evaluation criteria.",
+            'activity': "You are a creative educator designing engaging learning activities. Focus on hands-on, interactive experiences.",
+            'general': "You are a helpful educational assistant providing accurate and appropriate content."
+        }
+        
+        options = {
+            'system': system_prompts.get(content_type, system_prompts['general']),
+            'temperature': validated_data.get('temperature', 0.7),
+            'max_tokens': validated_data.get('max_tokens', 2048)
+        }
+        
+        # Call AI service
+        result = ai_proxy.call_ollama_generate(prompt, options)
+        
+        if result['success']:
+            log_security_event('ai_generate_success', {
+                'content_type': content_type,
+                'response_length': len(result.get('text', ''))
+            })
+            
+            return jsonify({
+                'success': True,
+                'content': result['text'],
+                'model': result.get('model'),
+                'content_type': content_type
+            })
+        else:
+            log_security_event('ai_generate_failure', {
+                'error': result['error']
+            })
+            return jsonify(result), 500
+            
+    except Exception as e:
+        logger.error(f"AI generation error: {e}")
+        log_security_event('ai_generate_error', {'error': str(e)})
+        return jsonify({
+            'success': False,
+            'error': 'Internal server error'
+        }), 500
+
+@app.route('/api/ai/test-connection', methods=['GET'])
+@require_rate_limit('default')
+def ai_test_connection():
+    """Test AI service connection"""
+    try:
+        ollama_status = ai_proxy.test_ollama_connection()
+        
+        return jsonify({
+            'success': True,
+            'services': {
+                'ollama': {
+                    'connected': ollama_status,
+                    'url': ai_proxy.ollama_base_url
+                }
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Connection test error: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Service test failed'
+        }), 500
+
+@app.route('/api/ai/models', methods=['GET'])
+@require_rate_limit('default')
+def ai_get_models():
+    """Get available AI models"""
+    try:
+        if not ai_proxy.test_ollama_connection():
+            return jsonify({
+                'success': False,
+                'error': 'AI service not available'
+            }), 503
+            
+        response = requests.get(f"{ai_proxy.ollama_base_url}/api/tags", timeout=10)
+        
+        if response.status_code == 200:
+            data = response.json()
+            models = [model.get('name', '') for model in data.get('models', [])]
+            
+            return jsonify({
+                'success': True,
+                'models': models,
+                'default_model': ai_proxy.default_model
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Failed to fetch models'
+            }), 500
+            
+    except Exception as e:
+        logger.error(f"Model fetch error: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Service error'
+        }), 500
+
+@app.route('/api/security/rate-limit-stats', methods=['GET'])
+def get_security_stats():
+    """Get security and rate limiting statistics"""
+    try:
+        from security_utils import rate_limiter, get_rate_limit_stats
+        
+        client_id = rate_limiter.get_client_id(request)
+        client_stats = rate_limiter.get_stats(client_id)
+        global_stats = get_rate_limit_stats()
+        
+        return jsonify({
+            'success': True,
+            'client_stats': client_stats,
+            'global_stats': global_stats,
+            'client_id': client_id
+        })
+        
+    except Exception as e:
+        logger.error(f"Security stats error: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Failed to get security stats'
+        }), 500
 
 @app.route('/api/crm/health', methods=['GET'])
 def api_health_check():

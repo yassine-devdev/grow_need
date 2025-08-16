@@ -6,11 +6,12 @@ import { useHistory } from './design/useHistory';
 import { DesignState, Page, CanvasElement, Project } from './design/types';
 import { getBoundingBox, reorderArray } from './design/utils';
 import { v4 as uuidv4 } from 'uuid';
+import { secureStorage } from '../../../utils/secureStorage';
 import './DesignStudio.css';
 
 declare const html2canvas: any;
 
-const LOCAL_STORAGE_KEY = 'design_studio_projects';
+const STORAGE_KEY = 'design-studio-projects';
 
 const createNewPage = (): Page => ({
   id: uuidv4(),
@@ -36,23 +37,33 @@ const DesignStudio: React.FC = () => {
 
   useEffect(() => {
     try {
-      const savedProjects = localStorage.getItem(LOCAL_STORAGE_KEY);
+      const savedProjects = secureStorage.getItem(STORAGE_KEY);
       if (savedProjects) {
-        setProjects(JSON.parse(savedProjects));
+        setProjects(savedProjects);
       }
-    } catch (e) { console.error("Failed to load projects", e); }
+    } catch (e) { 
+      console.error("Failed to load projects", e); 
+    }
   }, []);
 
   const saveProject = useCallback(() => {
     const projectName = prompt("Enter project name:", "Untitled Design");
     if (projectName) {
-      const newProject: Project = { id: uuidv4(), name: projectName, data: designState, lastModified: new Date().toISOString() };
+      const newProject: Project = { 
+        id: uuidv4(), 
+        name: projectName, 
+        data: designState, 
+        lastModified: new Date().toISOString() 
+      };
       setProjects(prev => {
         const updated = [...prev, newProject];
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+        if (secureStorage.setItem(STORAGE_KEY, updated)) {
+          alert("Project saved securely!");
+        } else {
+          alert("Failed to save project. Please try again.");
+        }
         return updated;
       });
-      alert("Project saved!");
     }
   }, [designState]);
   
@@ -65,7 +76,7 @@ const DesignStudio: React.FC = () => {
       if (window.confirm("Delete this project?")) {
         setProjects(prev => {
             const updated = prev.filter(p => p.id !== projectId);
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+            secureStorage.setItem(STORAGE_KEY, updated);
             return updated;
         });
       }

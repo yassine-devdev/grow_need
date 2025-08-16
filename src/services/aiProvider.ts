@@ -1,9 +1,9 @@
 /**
- * AI Provider Factory
- * Provides a unified interface that can switch between Ollama and Google Gemini
+ * AI Provider Factory - Secure Version
+ * Provides a unified interface that routes through secure backend endpoints
  */
 
-import { ollamaService } from './ollamaService';
+import { secureAIService } from './secureAIService';
 
 export interface AIResponse {
   text: string;
@@ -30,49 +30,117 @@ export interface AIProvider {
   translateText(text: string, targetLang: string, sourceLang?: string): Promise<string>;
 }
 
-class OllamaProvider implements AIProvider {
+class SecureOllamaProvider implements AIProvider {
   async generateContent(prompt: string, options: AIGenerateOptions = {}): Promise<AIResponse> {
-    const response = await ollamaService.generateContent(prompt, options);
-    return {
-      text: response.text,
-      model: response.model
-    };
+    try {
+      const response = await secureAIService.generateContent({
+        prompt,
+        content_type: 'general',
+        temperature: options.temperature,
+        max_tokens: options.max_tokens
+      });
+
+      if (response.success && response.content) {
+        return {
+          text: response.content,
+          model: response.model || 'secure-backend'
+        };
+      } else {
+        throw new Error(response.error || 'Failed to generate content');
+      }
+    } catch (error) {
+      console.error('Secure AI generation error:', error);
+      throw error;
+    }
   }
 
   async generateJSON(prompt: string, schema: any, options: AIGenerateOptions = {}): Promise<any> {
-    return ollamaService.generateJSON(prompt, schema, options);
+    try {
+      const jsonPrompt = `${prompt}\n\nIMPORTANT: Respond with valid JSON only that matches this schema: ${JSON.stringify(schema)}`;
+      
+      const response = await secureAIService.generateContent({
+        prompt: jsonPrompt,
+        content_type: 'general',
+        temperature: options.temperature || 0.3,
+        max_tokens: options.max_tokens
+      });
+
+      if (response.success && response.content) {
+        try {
+          return JSON.parse(response.content);
+        } catch (parseError) {
+          // Try to extract JSON from response
+          const jsonMatch = response.content.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            return JSON.parse(jsonMatch[0]);
+          }
+          throw new Error('Response is not valid JSON');
+        }
+      } else {
+        throw new Error(response.error || 'Failed to generate JSON');
+      }
+    } catch (error) {
+      console.error('Secure JSON generation error:', error);
+      throw error;
+    }
   }
 
   async testConnection(): Promise<boolean> {
-    return ollamaService.testConnection();
+    try {
+      const response = await secureAIService.testConnection();
+      return response.success && response.services?.ollama?.connected === true;
+    } catch (error) {
+      console.error('Connection test error:', error);
+      return false;
+    }
   }
 
   async getAvailableModels(): Promise<string[]> {
-    return ollamaService.getAvailableModels();
+    try {
+      const response = await secureAIService.getAvailableModels();
+      return response.success ? response.models || [] : [];
+    } catch (error) {
+      console.error('Get models error:', error);
+      return [];
+    }
   }
 
   async analyzeFeedback(text: string): Promise<any> {
-    return ollamaService.analyzeFeedback(text);
+    try {
+      const response = await secureAIService.analyzeFeedback({
+        text,
+        analysis_type: 'sentiment'
+      });
+
+      if (response.success && response.analysis) {
+        return response.analysis;
+      } else {
+        throw new Error(response.error || 'Failed to analyze feedback');
+      }
+    } catch (error) {
+      console.error('Feedback analysis error:', error);
+      throw error;
+    }
   }
 
   async generateEducationalContent(type: string, topic: string, grade: string, requirements?: string): Promise<string> {
-    return ollamaService.generateEducationalContent(type, topic, grade, requirements);
+    return secureAIService.generateEducationalContent(type, topic, grade, requirements);
   }
 
   async gradeSubmission(submission: string, rubric: string, context?: string): Promise<string> {
-    return ollamaService.gradeSubmission(submission, rubric, context);
+    return secureAIService.gradeSubmission(submission, rubric, context);
   }
 
   async detectLearningGaps(topic: string, answers: string): Promise<string> {
-    return ollamaService.detectLearningGaps(topic, answers);
+    return secureAIService.detectLearningGaps(topic, answers);
   }
 
   async generatePolicy(topic: string, audience: string, context?: string): Promise<string> {
-    return ollamaService.generatePolicy(topic, audience, context);
+    return secureAIService.generatePolicy(topic, audience, context);
   }
 
   async translateText(text: string, targetLang: string, sourceLang: string = 'auto'): Promise<string> {
-    return ollamaService.translateText(text, targetLang, sourceLang);
+    return secureAIService.translateText(text, targetLang, sourceLang);
   }
 }
 
@@ -203,18 +271,8 @@ class GeminiProvider implements AIProvider {
 
 // Factory function to create the appropriate AI provider
 export function createAIProvider(): AIProvider {
-  const provider = process.env.AI_PROVIDER || 'ollama';
-  
-  if (provider === 'gemini') {
-    const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
-    if (!apiKey) {
-      console.warn('Gemini API key not found, falling back to Ollama');
-      return new OllamaProvider();
-    }
-    return new GeminiProvider(apiKey);
-  }
-  
-  return new OllamaProvider();
+  // Always use secure provider now - no more direct API calls
+  return new SecureOllamaProvider();
 }
 
 // Export singleton instance

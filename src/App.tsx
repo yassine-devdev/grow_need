@@ -8,27 +8,35 @@ import BottomDock from './components/layout/BottomDock';
 import { APP_MODULES, OVERLAY_APPS } from './constants';
 import CartOverlay from './components/overlays/CartOverlay';
 import { applyTheme, applyDesign } from './components/modules/settings/theme-utils';
+import { secureStorage } from './utils/secureStorage';
 
 const AppContent: React.FC = () => {
   const { activeModule, activeOverlay, closeOverlay, minimizeOverlay, isCartOpen, isRtl } = useAppContext();
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('aura-theme');
+    // Migrate legacy storage items and cleanup old data
+    secureStorage.migrateLegacyItems();
+    secureStorage.cleanup();
+
+    // Load theme from secure storage
+    const savedTheme = secureStorage.getItem('aura-theme');
     if (savedTheme) {
       try {
-        applyTheme(JSON.parse(savedTheme));
+        applyTheme(savedTheme);
       } catch (e) {
-        console.error("Failed to parse saved theme", e);
-        localStorage.removeItem('aura-theme');
+        console.error("Failed to apply saved theme", e);
+        secureStorage.removeItem('aura-theme');
       }
     }
-    const savedDesign = localStorage.getItem('aura-design');
+
+    // Load design from secure storage
+    const savedDesign = secureStorage.getItem('aura-design');
     if (savedDesign) {
       try {
-        applyDesign(JSON.parse(savedDesign));
+        applyDesign(savedDesign);
       } catch (e) {
-        console.error("Failed to parse saved design", e);
-        localStorage.removeItem('aura-design');
+        console.error("Failed to apply saved design", e);
+        secureStorage.removeItem('aura-design');
       }
     }
   }, []);
